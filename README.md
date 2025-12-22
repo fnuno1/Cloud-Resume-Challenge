@@ -81,6 +81,41 @@ The design uses a dark theme, responsive layout, hover effects, and clean typogr
 
 ---
 
+## 🌐 Domain & DNS Configuration
+
+To prepare the resume site for Azure hosting and HTTPS, the domain fabianresume.dev was purchased through Namecheap and delegated to Azure for DNS management.
+
+Steps Completed
+Created an Azure DNS Zone for fabianresume.dev
+
+Updated Namecheap nameservers to point to Azure:
+
+ns1-04.azure-dns.com
+
+ns2-04.azure-dns.net
+
+ns3-04.azure-dns.org
+
+ns4-04.azure-dns.info
+
+Verified DNS propagation using global DNS tools
+
+Azure DNS is now the authoritative DNS provider for the domain
+
+This setup enables Azure Static Web Apps to automatically validate domain ownership, issue HTTPS certificates, and manage routing cleanly.
+
+## 🔧 Upcoming Domain Integration
+
+Once the Static Web App is deployed, the following DNS records will be added inside Azure DNS:
+
+TXT record for domain verification
+
+CNAME or A record for custom domain routing
+
+Automatic HTTPS via Azure-managed certificates
+
+This will make the site publicly accessible at:<https://fabianresume.dev>
+
 ## 📌 Next Steps
 
 - Add visitor counter using JavaScript + Azure Function
