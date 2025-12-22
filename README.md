@@ -1,4 +1,5 @@
 # 🌐 Cloud Resume Challenge — Fabian Nuno
+
 ![CI/CD](https://img.shields.io/badge/GitHub%20Actions-ready-blue?logo=githubactions)
 
 This is my personal resume website built as part of the **Cloud Resume Challenge**.  
@@ -40,23 +41,24 @@ The design uses a dark theme, responsive layout, hover effects, and clean typogr
 - Google Fonts (Roboto)  
 - Font Awesome  
 - GitHub  
-- *(Azure Static Web Apps + Azure Functions coming soon)*    
+- *(Azure Static Web Apps + Azure Functions coming soon)*
 
 ## 📁 File Structure
-/CLOUD-RESUME-CHALLENGE 
-│── index.html 
-│── styles.css 
-│── /images 
-├── linkedin.png 
-├── github.png 
+
+/CLOUD-RESUME-CHALLENGE
+│── index.html
+│── styles.css
+│── /images
+├── linkedin.png
+├── github.png
 ├── AZ104.png  
-├── A+.png 
-├── Network+.png 
-├── Security+.png 
-├── Project+.png 
-├── Cloud+.png 
-├── LPI.png 
-│ └── ITIL4.png 
+├── A+.png
+├── Network+.png
+├── Security+.png
+├── Project+.png
+├── Cloud+.png
+├── LPI.png
+│ └── ITIL4.png
 └── README.md
 
 ---
@@ -104,4 +106,3 @@ Currently completing a B.S. in Cloud Computing at WGU.
 - Location: Georgetown, TX
 
 ---
-
