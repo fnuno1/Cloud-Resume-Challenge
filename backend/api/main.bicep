@@ -30,11 +30,19 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 }
 
 // ---------------------------
+// Table Service (required parent)
+// ---------------------------
+resource tableService 'Microsoft.Storage/storageAccounts/tableServices@2023-01-01' = {
+  name: 'default'
+  parent: storageAccount
+}
+
+// ---------------------------
 // Storage Table
 // ---------------------------
 resource visitorTable 'Microsoft.Storage/storageAccounts/tableServices/tables@2023-01-01' = {
-  parent: storageAccount
-  name: 'default/${tableName}'
+  name: tableName
+  parent: tableService
 }
 
 // ---------------------------
