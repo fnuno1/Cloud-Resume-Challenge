@@ -15,13 +15,15 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         table_name=table_name
     )
 
-    entity = table_client.get_entity(partition_key="counter", row_key="1")
-    entity["Count"] = int(entity["Count"]) + 1
+    # Match the entity you inserted: PartitionKey=resume, RowKey=counter, count=1
+    entity = table_client.get_entity(partition_key="resume", row_key="counter")
+    entity["count"] = int(entity["count"]) + 1
     table_client.update_entity(entity)
 
     return func.HttpResponse(
-        json.dumps({"count": entity["Count"]}),
+        json.dumps({"count": entity["count"]}),
         mimetype="application/json",
         status_code=200
     )
+
 
