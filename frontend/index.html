@@ -11,7 +11,6 @@
     <header class="block"> <!-- Header section of the resume -->
         <h1 class="name">Hi I'm Fabian Nuno</h1> <!-- Heading for the name -->
         <p class="title">Azure Administrator</p> <!-- Paragraph for the job role or title -->
-        <p>and this page has been viewed<a id="counter"></a> times :) </p>
         <div class="linkedin-icon-container top-icon"> <!-- Container for LinkedIn icon -->
             <a href="https://www.linkedin.com/in/fabian-nuno" title="Visit my LinkedIn profile" target="_blank"> <!-- Link to LinkedIn profile with a tooltip and opens in a new tab -->
                 <img src="images/linkedin.png" alt="LinkedIn Logo" class="linkedin-top-icon"> <!-- LinkedIn icon image with alternative text and class for styling -->
@@ -20,6 +19,13 @@
             </a>
         </div> <!-- End of LinkedIn icon container -->
     </header> <!-- End of header section -->
+    
+    <!-- Visitor counter placeholder --> <!-- This <p> element creates a visible label "Visitor Count:" --> 
+        <!-- The <span> with id="counter" is where the script will inject the live number -->
+       <div class="visitor-counter">
+            Visitor Count: <span id="counter">Loading...</span>
+        </div>
+
     <main> <!-- Main content of the resume -->
         <section class="summary block"> <!-- Summary section -->
             <h2>Summary</h2> <!-- Summary heading -->
@@ -190,12 +196,6 @@
                 </a>
             </div> <!-- End of LinkedIn icon container -->
         </footer> <!-- End of footer section -->
-
-        <!-- Visitor counter placeholder --> <!-- This <p> element creates a visible label "Visitor Count:" --> 
-        <!-- The <span> with id="counter" is where the script will inject the live number -->
-       <div class="visitor-counter">
-            Visitor Count: <span id="counter">Loading...</span>
-        </div>
         </main> <!-- End of main content -->
 <script>
   fetch('https://fabian-resume-api.azurewebsites.net/api/getresumecounter')
