@@ -198,7 +198,7 @@
             </div> <!-- End of LinkedIn icon container -->
         </footer> <!-- End of footer section -->
 
-        <script> fetch('/api/GetResumeCounter')
+        <script> fetch('/api/getresumecounter')
              .then(response => response.json()) 
              .then(data => {
                  document.getElementById('counter').innerText = data.count; 
