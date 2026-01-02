@@ -190,6 +190,12 @@
                 </a>
             </div> <!-- End of LinkedIn icon container -->
         </footer> <!-- End of footer section -->
+
+        <!-- Visitor counter placeholder --> <!-- This <p> element creates a visible label "Visitor Count:" --> 
+        <!-- The <span> with id="counter" is where the script will inject the live number -->
+       <div class="visitor-counter">
+            Visitor Count: <span id="counter">Loading...</span>
+        </div>
         </main> <!-- End of main content -->
 <script>
   fetch('https://fabian-resume-api.azurewebsites.net/api/getresumecounter')
@@ -202,8 +208,6 @@
       document.getElementById('counter').innerText = "Error";
     });
 </script>
-
-
 
         </body> <!-- End of body section -->
         </html> <!-- End of HTML document -->
