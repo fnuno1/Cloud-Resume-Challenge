@@ -4,7 +4,7 @@
     <meta charset="UTF-8"> <!-- Sets the character encoding for the document to UTF-8 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures the website is responsive on different devices -->
     <title>Fabian Nuno - Resume</title> <!-- Sets the title of the document displayed in the browser tab -->
-    <link rel="stylesheet" href="style3.css"> <!-- Links to the external CSS stylesheet -->
+    <link rel="stylesheet" href="style.css"> <!-- Links to the external CSS stylesheet -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"> <!-- Links to Google Fonts for the 'Roboto' font family -->
 </head>
 <body> <!-- Body section starts here -->
@@ -191,6 +191,18 @@
             </div> <!-- End of LinkedIn icon container -->
         </footer> <!-- End of footer section -->
         </main> <!-- End of main content -->
+<script>
+  fetch('/api/GetResumeCounter')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('counter').innerText = ` ${data.count}`;
+    })
+    .catch(error => {
+      console.error('Error fetching counter:', error);
+    });
+</script>
+
+
         </body> <!-- End of body section -->
         </html> <!-- End of HTML document -->
         >
