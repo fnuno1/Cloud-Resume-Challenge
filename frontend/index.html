@@ -198,20 +198,24 @@
             </div> <!-- End of LinkedIn icon container -->
         </footer> <!-- End of footer section -->
 
-        <script> fetch('/api/getresumecounter')
-             .then(response => response.json()) 
-             .then(data => {
-                 document.getElementById('counter').innerText = data.count; 
-                }) 
-            .catch(error => { 
-                console.error('Error fetching counter:', error);
-                 document.getElementById('counter').innerText = "Error"; 
-                }); 
-            </script>
+       <script>
+        async function updateVisitorCount() {
+        try {
+            const response = await fetch("https://fabian-resume-api.azurewebsites.net/api/GetResumeCounter");
+            const data = await response.json();
+            document.getElementById("visitor-count").textContent = data.count;
+        }   catch (error) {
+            console.error("Failed to fetch visitor count:", error);
+    }
+  }
+
+  window.onload = updateVisitorCount;
+</script>
+
         </body> <!-- End of body section -->
         </html> <!-- End of HTML document -->
         
         
-<!-- VIEW FILE HISTORY -->
+
 
         
