@@ -559,6 +559,26 @@ header .title {
     border-bottom-right-radius: 8px; /* Keeps the bottom-right corner rounded */
 }
 
+/* ===========================
+   Visitor Counter Styling
+   =========================== */
+.visitor-counter {
+  text-align: center;         /* Center the counter under the footer */
+  margin-top: 12px;           /* Add space above the counter */
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+}
+
+#counter {
+  font-weight: bold;          /* Make the number stand out */
+  color: #2c3e50;             /* Dark slate color for readability */
+  background-color: #ecf0f1;  /* Light background highlight */
+  padding: 4px 8px;           /* Breathing room around the text */
+  border-radius: 6px;         /* Rounded corners for a modern look */
+  margin-left: 6px;           /* Space between label and number */
+}
+
+
 
 
 
