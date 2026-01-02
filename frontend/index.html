@@ -181,6 +181,7 @@
                 </div>
             </div>
         </section> <!-- End of certifications section -->
+        </main> <!-- End of main content -->
         <footer class="block"> <!-- Footer section -->
             <h2>Contact Information</h2> <!-- Contact Information heading -->
             <ul> <!-- Unordered list for contact details -->
@@ -196,22 +197,20 @@
                 </a>
             </div> <!-- End of LinkedIn icon container -->
         </footer> <!-- End of footer section -->
-        </main> <!-- End of main content -->
-<script>
-  fetch('https://fabian-resume-api.azurewebsites.net/api/getresumecounter')
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById('counter').innerText = data.count;
-    })
-    .catch(error => {
-      console.error('Error fetching counter:', error);
-      document.getElementById('counter').innerText = "Error";
-    });
-</script>
 
+        <script> fetch('/api/GetResumeCounter')
+             .then(response => response.json()) 
+             .then(data => {
+                 document.getElementById('counter').innerText = data.count; 
+                }) 
+            .catch(error => { 
+                console.error('Error fetching counter:', error);
+                 document.getElementById('counter').innerText = "Error"; 
+                }); 
+            </script>
         </body> <!-- End of body section -->
         </html> <!-- End of HTML document -->
-        >
+        
         
 
 
