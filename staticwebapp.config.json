@@ -1,5 +1,15 @@
 ﻿{
   "platform": {
     "apiRuntime": "python:3.10"
-  }
+  },
+  "routes": [
+    {
+      "route": "/GetResumeCounter",
+      "rewrite": "/api/getresumecounter"
+    },
+    {
+      "route": "/getresumecounter",
+      "rewrite": "/api/getresumecounter"
+    }
+  ]
 }
