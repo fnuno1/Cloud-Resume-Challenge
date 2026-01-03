@@ -13,11 +13,12 @@ Backend, CI/CD, and Azure integrations will be added in the next phase.
 This project includes a fully functional, cloud‑backed visitor counter.
 
 The counter is powered by:
-  Azure Functions (Python)
-  Azure Cosmos DB (NoSQL)
-  HTTP‑triggered API endpoint
-  JavaScript fetch call that updates the count in real time
-  CORS‑secured communication between frontend and backend
+
+- Azure Functions (Python)
+- Azure Cosmos DB (NoSQL)
+- HTTP‑triggered API endpoint
+- JavaScript fetch call that updates the count in real time
+- CORS‑secured communication between frontend and backend
 Every page load triggers the API, increments the count in Cosmos DB, and displays the updated total instantly.
 
 ## 📄 Project Overview
@@ -116,10 +117,6 @@ Expand CI/CD to include frontend deployment pipeline
 **Fabian Nuno** — Azure Administrator at Total Site Solutions  
 Focused on secure infrastructure, automation, and empowering teams through scalable systems.  
 Currently completing a B.S. in Cloud Computing at WGU.
-
----
-
-📬 Contact
 
 ## 📬 Contact
 
