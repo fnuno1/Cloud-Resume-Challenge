@@ -104,13 +104,14 @@ Verified DNS propagation
 
 Enabled Azure‑managed HTTPS certificates
 
-TThis will make the site publicly accessible at [https://fabianresume.dev](https://fabianresume.dev)
+This will make the site publicly accessible at [https://fabianresume.dev](https://fabianresume.dev)
 
 📌 Next Enhancements
-Add recruiter click tracking
-Add analytics dashboard
-Add automated uptime monitoring
-Expand CI/CD to include frontend deployment pipeline
+
+- Add recruiter click tracking
+- Add analytics dashboard
+- Add automated uptime monitoring
+- Expand CI/CD to include frontend deployment pipeline
 
 ## 👤 About Me
 
