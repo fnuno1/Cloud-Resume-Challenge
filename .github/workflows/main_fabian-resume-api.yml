@@ -11,7 +11,6 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: './backend'
   PYTHON_VERSION: '3.10'
 
 jobs:
@@ -74,10 +73,11 @@ jobs:
         with:
           app-name: 'fabian-resume-api'
           slot-name: 'Production'
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          package: .
 
 
 
           
+
 
 
