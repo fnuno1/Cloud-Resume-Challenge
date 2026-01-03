@@ -28,9 +28,13 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install dependencies
-        run: pip install -r backend/requirements.txt
+      # ⭐ Install dependencies INTO backend/.python_packages so Azure can use them
+      - name: Install dependencies into .python_packages
+        run: |
+          cd backend
+          pip install -r requirements.txt --target=".python_packages/lib/site-packages"
 
+      # ⭐ Zip backend folder INCLUDING .python_packages
       - name: Zip backend contents for deployment
         run: |
           cd backend
@@ -78,6 +82,7 @@ jobs:
 
 
           
+
 
 
 
