@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project implements a full endtoend cloud architecture for a dynamic resume website. It combines a static frontend, a serverless backend, a NoSQL database, and a CI/CD pipeline  all deployed on Azure and automated through GitHub Actions.
+This project implements a full end-to-end cloud architecture for a dynamic resume website. It combines a static frontend, a serverless backend, a NoSQL database, and a CI/CD pipeline  all deployed on Azure and automated through GitHub Actions.
 
 ## Frontend (Static Website)
 
