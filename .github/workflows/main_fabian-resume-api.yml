@@ -73,11 +73,12 @@ jobs:
         with:
           app-name: 'fabian-resume-api'
           slot-name: 'Production'
-          package: .
+          package: backend
 
 
 
           
+
 
 
 
