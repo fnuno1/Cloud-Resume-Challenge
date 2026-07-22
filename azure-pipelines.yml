@@ -1,129 +1,289 @@
 # ============================================================
-# Cloud Resume Challenge — Azure DevOps Pipeline
-# Org:     dev.azure.com/nufaze84
-# Project: Cloud_Resume-Challenge
-# Deploy:  Azure Static Web Apps (fabian-resume-site)
+# Cloud Resume Challenge — Azure DevOps CI/CD Pipeline
+# ============================================================
+# Author:      Fabian Nuno
+# Org:         dev.azure.com/nufaze84
+# Project:     Cloud_Resume-Challenge
+# Target:      Azure Static Web App — fabian-resume-site
+# Live URL:    https://fabianresume.dev
+# ============================================================
+#
+# HOW THIS PIPELINE WORKS:
+# ---------------------------------------------------------------
+# This pipeline has two stages: Validate and Deploy.
+#
+# VALIDATE runs automatically on every PR targeting main and on
+# every push to main. It checks that the required files exist,
+# that internal references are intact, and that the HTML file
+# is not empty or corrupt. This is a safety gate — it catches
+# problems before they ever reach production.
+#
+# DEPLOY runs only after Validate passes AND the change has been
+# merged into main (not on a PR). It is guarded by a manual
+# approval gate configured in the Azure DevOps "production"
+# environment. You must explicitly approve before files go live.
+#
+# VARIABLE GROUP:
+# The pipeline reads secrets from a variable group named
+# "cloud-resume-secrets" stored in Pipelines → Library.
+# That group contains the Static Web App deployment token
+# (AZURE_STATIC_WEB_APPS_API_TOKEN) which authenticates the
+# deployment to Azure without exposing credentials in code.
+#
+# LINE ENDINGS:
+# A .gitattributes file at the repo root enforces LF line endings
+# for all HTML, CSS, JS, YAML, and MD files. This prevents git's
+# automatic CRLF conversion on Windows from corrupting files
+# during checkout. Never remove .gitattributes from this repo.
 # ============================================================
 
+# ---------------------------------------------------------------
+# TRIGGER — when does this pipeline run automatically?
+# ---------------------------------------------------------------
 trigger:
   branches:
     include:
-      - main
+      - main          # Only trigger on pushes to main (not feature branches)
   paths:
     include:
-      - frontend/**
-      - azure-pipelines.yml
+      - frontend/**           # Any change inside the frontend folder
+      - azure-pipelines.yml   # Changes to the pipeline itself also trigger a run
 
+# ---------------------------------------------------------------
+# PR TRIGGER — runs Validate on every pull request into main
+# This gives you a green/red check on the PR before you merge
+# ---------------------------------------------------------------
 pr:
   branches:
     include:
-      - main
+      - main          # Watch PRs targeting main only
   paths:
     include:
-      - frontend/**
+      - frontend/**   # Only care about frontend changes in PRs
 
+# ---------------------------------------------------------------
+# VARIABLES
+# ---------------------------------------------------------------
 variables:
+  # Pull in the secret variable group from Pipelines → Library
+  # This group contains AZURE_STATIC_WEB_APPS_API_TOKEN (secret)
+  # which is the deployment token for fabian-resume-site
   - group: cloud-resume-secrets
+
+  # The folder that contains index.html, style.css, and images/
+  # Referenced throughout the pipeline as $(frontendPath)
   - name: frontendPath
     value: 'frontend'
 
+# ============================================================
+# STAGES
+# ============================================================
 stages:
 
+# ---------------------------------------------------------------
+# STAGE 1: VALIDATE
+# Runs on every PR and every push to main.
+# Does NOT deploy anything — purely checks file integrity.
+# If any step fails, the pipeline stops and Deploy never runs.
+# ---------------------------------------------------------------
 - stage: Validate
-  displayName: 'Validate'
+  displayName: 'Validate'   # Label shown in the Azure DevOps UI
   jobs:
+
   - job: HTMLLint
     displayName: 'HTML & CSS Validation'
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'ubuntu-latest'   # Use a fresh Linux agent for each run
+
     steps:
 
+    # Pull the repo code onto the agent so we can inspect files
     - checkout: self
       displayName: 'Checkout source'
 
+    # -------------------------------------------------------
+    # STEP 1: Verify required files exist
+    # The pipeline cannot deploy what isn't there.
+    # Fails the job immediately if index.html or style.css
+    # are missing — emits an Azure DevOps error annotation
+    # so it shows up clearly in the pipeline UI.
+    # -------------------------------------------------------
     - script: |
         echo "=== Checking for required files ==="
+
+        # Check that the main HTML file is present
+        # ##vso[task.logissue] writes a red error into the pipeline log UI
         if [ ! -f "$(frontendPath)/index.html" ]; then
           echo "##vso[task.logissue type=error]index.html not found in frontend/"
-          exit 1
+          exit 1   # Non-zero exit code fails the step and stops the job
         fi
         echo "✓ index.html found"
+
+        # Check that the stylesheet is present
         if [ ! -f "$(frontendPath)/style.css" ]; then
           echo "##vso[task.logissue type=error]style.css not found in frontend/"
           exit 1
         fi
         echo "✓ style.css found"
+
+        # Warn (but do not fail) if the images folder is missing
+        # A missing images folder won't break deployment but will
+        # cause broken cert logo images on the live site
         if [ ! -d "$(frontendPath)/images" ]; then
-          echo "##vso[task.logissue type=warning]images/ directory not found"
+          echo "##vso[task.logissue type=warning]images/ directory not found — cert logos may be broken on live site"
         else
           echo "✓ images/ directory found"
         fi
       displayName: 'Verify required files exist'
 
+    # -------------------------------------------------------
+    # STEP 2: Internal reference checks
+    # Verifies that the CSS file referenced in index.html
+    # actually exists, and that the visitor counter API URL
+    # is still present in the HTML.
+    # continueOnError: true means warnings here won't block
+    # the pipeline — they show as yellow, not red.
+    # -------------------------------------------------------
     - script: |
         echo "=== Internal reference checks ==="
+
+        # Extract the href value from the <link> stylesheet tag in index.html
+        # Example: href="style.css" → extracts "style.css"
         CSS_REF=$(grep -o 'href="[^"]*\.css"' $(frontendPath)/index.html | head -1 | sed 's/href="//;s/"//')
+
+        # If a CSS reference was found but the file doesn't exist, warn
         if [ -n "$CSS_REF" ] && [ ! -f "$(frontendPath)/$CSS_REF" ]; then
-          echo "##vso[task.logissue type=warning]CSS reference '$CSS_REF' not found"
+          echo "##vso[task.logissue type=warning]CSS reference '$CSS_REF' found in index.html but file does not exist"
         else
           echo "✓ CSS reference check passed"
         fi
+
+        # Confirm the visitor counter API endpoint is still in the HTML
+        # If someone accidentally deletes the script block, this catches it
         if grep -q "azurewebsites.net" "$(frontendPath)/index.html"; then
-          echo "✓ Visitor counter API endpoint found"
+          echo "✓ Visitor counter API endpoint found (fabian-resume-api.azurewebsites.net)"
         else
-          echo "##vso[task.logissue type=warning]Visitor counter API URL not found"
+          echo "##vso[task.logissue type=warning]Visitor counter API URL not found in index.html — counter may be broken"
         fi
       displayName: 'Internal reference checks'
-      continueOnError: true
+      continueOnError: true   # Warnings only — don't fail the pipeline on these
 
+    # -------------------------------------------------------
+    # STEP 3: File size sanity check
+    # Catches cases where index.html was accidentally emptied
+    # or replaced with a 0-byte file. A valid resume HTML
+    # should always be well over 500 bytes.
+    # -------------------------------------------------------
     - script: |
         echo "=== File size check ==="
+
+        # Get the byte size of each file
         HTML_SIZE=$(wc -c < "$(frontendPath)/index.html")
         CSS_SIZE=$(wc -c < "$(frontendPath)/style.css")
+
         echo "index.html: ${HTML_SIZE} bytes"
         echo "style.css:  ${CSS_SIZE} bytes"
+
+        # A valid index.html must be at least 500 bytes
+        # If it's smaller something went very wrong (empty file, encoding issue, etc.)
         if [ "$HTML_SIZE" -lt 500 ]; then
-          echo "##vso[task.logissue type=error]index.html appears empty or corrupt"
+          echo "##vso[task.logissue type=error]index.html is ${HTML_SIZE} bytes — appears empty or corrupt. Aborting."
           exit 1
         fi
+
         echo "✓ File size checks passed"
       displayName: 'File size sanity check'
 
+# ---------------------------------------------------------------
+# STAGE 2: DEPLOY
+# Deploys the frontend folder to Azure Static Web Apps.
+#
+# CONDITIONS — this stage only runs when ALL of these are true:
+#   1. The Validate stage passed (no errors)
+#   2. The source branch is main (not a feature branch)
+#   3. This is NOT a PR build (PRs only run Validate, not Deploy)
+#
+# The "environment: production" line links this deployment to the
+# Azure DevOps environment named "production". That environment
+# has a manual approval gate configured — you must click Approve
+# in the Azure DevOps UI before files actually ship to Azure.
+# ---------------------------------------------------------------
 - stage: Deploy
   displayName: 'Deploy to Azure Static Web Apps'
-  dependsOn: Validate
+  dependsOn: Validate   # Cannot start until Validate finishes successfully
+
+  # Only deploy when:
+  #   - Validate succeeded
+  #   - We are on the main branch (merged code, not a PR)
+  #   - The build was not triggered by a pull request
   condition: |
     and(
       succeeded('Validate'),
       eq(variables['Build.SourceBranch'], 'refs/heads/main'),
       ne(variables['Build.Reason'], 'PullRequest')
     )
+
   jobs:
+
+  # Use a deployment job (not a regular job) so Azure DevOps
+  # tracks deployment history and links it to the environment
   - deployment: DeployFrontend
     displayName: 'Deploy frontend to fabian-resume-site'
     pool:
       vmImage: 'ubuntu-latest'
+
+    # "production" is the Azure DevOps environment name.
+    # Go to Pipelines → Environments → production → Approvals
+    # to configure who must approve before deployment proceeds.
     environment: 'production'
+
     strategy:
-      runOnce:
+      runOnce:          # Deploy once, no rolling or canary strategy needed
         deploy:
           steps:
 
+          # Pull the latest code onto the deployment agent
           - checkout: self
             displayName: 'Checkout source'
 
+          # -------------------------------------------------------
+          # DEPLOY STEP: Push files to Azure Static Web Apps
+          # AzureStaticWebApp@0 is the official Microsoft task
+          # that handles the upload to Azure Static Web Apps.
+          #
+          # app_location: the folder containing index.html and style.css
+          # output_location: leave empty — no build step needed (pure HTML/CSS)
+          # skip_api_build: true — the Azure Function backend is managed
+          #   separately (fabian-resume-api) so we skip API build here
+          #
+          # The deployment token comes from the variable group secret.
+          # It authenticates this agent to the fabian-resume-site resource
+          # in Azure without storing credentials anywhere in the code.
+          # -------------------------------------------------------
           - task: AzureStaticWebApp@0
-            displayName: 'Deploy to Azure Static Web Apps'
+            displayName: 'Deploy to Azure Static Web Apps (fabian-resume-site)'
             inputs:
-              app_location: '$(frontendPath)'
-              output_location: ''
-              skip_api_build: true
+              app_location: '$(frontendPath)'   # frontend/ folder
+              output_location: ''               # No build output — deploy as-is
+              skip_api_build: true              # API (Function App) is managed separately
             env:
+              # Secret injected at runtime from the cloud-resume-secrets variable group
+              # Never hardcode this token — it grants write access to the production site
               azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
 
+          # -------------------------------------------------------
+          # SUMMARY STEP: Print deployment details to the log
+          # Useful for audit trail — shows exactly what build
+          # number and commit SHA were deployed to production
+          # -------------------------------------------------------
           - script: |
-              echo "=== Deployment complete ==="
-              echo "Site:    https://fabianresume.dev"
-              echo "Build:   $(Build.BuildNumber)"
-              echo "Commit:  $(Build.SourceVersion)"
+              echo "============================================"
+              echo "  DEPLOYMENT COMPLETE"
+              echo "============================================"
+              echo "  Site:      https://fabianresume.dev"
+              echo "  Build:     $(Build.BuildNumber)"
+              echo "  Commit:    $(Build.SourceVersion)"
+              echo "  Requested: $(Build.RequestedFor)"
+              echo "  Time:      $(date -u)"
+              echo "============================================"
             displayName: 'Deployment summary'
