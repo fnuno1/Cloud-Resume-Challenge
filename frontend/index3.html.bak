@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- Declares the document type and language as English -->
+<head>
+    <meta charset="UTF-8"> <!-- Sets the character encoding for the document to UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures the website is responsive on different devices -->
+    <title>Fabian Nuno - Resume</title> <!-- Sets the title of the document displayed in the browser tab -->
+    <link rel="stylesheet" href="style3.css"> <!-- Links to the external CSS stylesheet -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"> <!-- Links to Google Fonts for the 'Roboto' font family -->
+</head>
+<body> <!-- Body section starts here -->
+    <header class="block"> <!-- Header section of the resume -->
+        <h1 class="name">Hi I'm Fabian Nuno</h1> <!-- Heading for the name -->
+        <p class="title">Azure Administrator</p> <!-- Paragraph for the job role or title -->
+        <p>and this page has been viewed<a id="counter"></a> times :) </p>
+        <div class="linkedin-icon-container top-icon"> <!-- Container for LinkedIn icon -->
+            <a href="https://www.linkedin.com/in/fabian-nuno" title="Visit my LinkedIn profile" target="_blank"> <!-- Link to LinkedIn profile with a tooltip and opens in a new tab -->
+                <img src="images/linkedin.png" alt="LinkedIn Logo" class="linkedin-top-icon"> <!-- LinkedIn icon image with alternative text and class for styling -->
+                <a href="https://github.com/fnuno1/Azure-Resume-" title="Visit my GitHub profile" target="_blank"> 
+                <img src="images/github.png" alt="GitHub Logo" class="github-top-icon">
+            </a>
+        </div> <!-- End of LinkedIn icon container -->
+    </header> <!-- End of header section -->
+    <main> <!-- Main content of the resume -->
+        <section class="summary block"> <!-- Summary section -->
+            <h2>Summary</h2> <!-- Summary heading -->
+            <p class="summary-text">Dedicated Azure Administrator with 4 years of experience in optimizing and managing Azure environments. Proven track record of reducing operational costs and enhancing security. 
+            Strong problem-solving skills and a proactive approach to system efficiency. Experienced in collaborating with cross-functional teams to deliver innovative cloud solutions.</p> <!-- Summary paragraph -->
+        </section> <!-- End of summary section -->
+        
+        <section class="experience"> <!-- Experience section -->
+            <h2>Experience</h2> <!-- Experience heading -->
+            
+            <!-- Azure Administrator Job -->
+            <div class="job-entry"> <!-- Job entry for Azure Administrator -->
+                <h3>Azure Administrator | Total Site Solutions</h3> <!-- Job title and company name -->
+                <p><strong>Location:</strong> Round Rock, TX | <strong>September 2023 - Present</strong></p> <!-- Job location and date -->
+                <ul> <!-- Unordered list of job responsibilities -->
+                    <li>Integrated on-prem AD with Azure AD for enhanced security and efficiency.</li>
+                    <li>Automated device enrollment with Intune and Defender, boosting security.</li>
+                    <li>Reduced operational costs by 25% through cloud resource optimization.</li>
+                    <li>Migrated critical business apps to Microsoft 365 for better collaboration.</li>
+                    <li>Improved cybersecurity with advanced protocols using Microsoft Defender.</li>
+                    <li>Minimized downtime through troubleshooting and Monitoring with Azure AD.</li>
+                    <li>Led training on Azure best practices, promoting continuous improvement.</li>
+                </ul> <!-- End of job responsibilities list -->
+            </div> <!-- End of Azure Administrator job entry -->
+            
+            <!-- IT Technician II Job -->
+            <div class="job-entry"> <!-- Job entry for IT Technician II -->
+                <h3>IT Technician II | Total Site Solutions</h3> <!-- Job title and company name -->
+                <p><strong>Location:</strong> Round Rock, TX | <strong>September 2022 - Present</strong></p> <!-- Job location and date -->
+                <ul> <!-- Unordered list of job responsibilities -->
+                    <li>Acted as the primary IT liaison for C-level executives, ensuring seamless technology support.</li>
+                    <li>Managed an inventory of over $20,000 in equipment, ensuring proper utilization and security.</li>
+                    <li>Administered Active Directory, Group Policies, user accounts, permissions, and software licenses.</li>
+                    <li>Executed comprehensive Windows administration across a network of 200 computers.</li>
+                    <li>Developed and implemented automated workflows, reducing support ticket resolution time by 30%.</li>
+                </ul> <!-- End of job responsibilities list -->
+            </div> <!-- End of IT Technician II job entry -->
+            
+            <!-- Help Desk Technician - Sun Auto Tire & Service Job -->
+            <div class="job-entry"> <!-- Job entry for Help Desk Technician at Sun Auto Tire & Service -->
+                <h3>Help Desk Technician | Sun Auto Tire & Service</h3> <!-- Job title and company name -->
+                <p><strong>Location:</strong> United States | <strong>March 2022 - September 2022</strong></p> <!-- Job location and date -->
+                <ul> <!-- Unordered list of job responsibilities -->
+                    <li>Created comprehensive help desk documentation with detailed step-by-step instructions.</li>
+                    <li>Delivered level 1 and 2 support for on-site and remote clients, ensuring swift issue resolution.</li>
+                    <li>Managed end-user support for over 100 user accounts through Active Directory.</li>
+                    <li>Conducted diagnostics and troubleshooting of system issues, ensuring minimal downtime.</li>
+                    <li>Utilized Zendesk to streamline ticket management, enhancing response and resolution efficiency.</li>
+                </ul> <!-- End of job responsibilities list -->
+            </div> <!-- End of Help Desk Technician job entry -->
+            
+            <!-- Help Desk Technician - Apex Systems/Whole Foods Job -->
+            <div class="job-entry"> <!-- Job entry for Help Desk Technician at Apex Systems/Whole Foods -->
+                <h3>Help Desk Technician | Apex Systems/Whole Foods</h3> <!-- Job title and company name -->
+                <p><strong>Location:</strong> Austin, TX | <strong>October 2021 - March 2022</strong></p> <!-- Job location and date -->
+                <ul> <!-- Unordered list of job responsibilities -->
+                    <li>Provided Tier 1 IT support to non-technical internal users, resolving issues efficiently.</li>
+                    <li>Diffused high-pressure situations with empathy, maintaining a calm demeanor.</li>
+                    <li>Created detailed help desk documentation with step-by-step instructions.</li>
+                    <li>Utilized ServiceNow for efficient ticket management, improving response times.</li>
+                    <li>Developed automated workflows in ServiceNow, boosting resolution efficiency by 30%.</li>
+                    <li>Trained new hires on IT support best practices and ServiceNow usage.</li>
+                </ul> <!-- End of job responsibilities list -->
+            </div> <!-- End of Help Desk Technician job entry -->
+            
+            <!-- Help Desk Technician - Capgemini Job -->
+            <div class="job-entry"> <!-- Job entry for Help Desk Technician at Capgemini -->
+                <h3>Help Desk Technician | Capgemini</h3> <!-- Job title and company name -->
+                <p><strong>Location:</strong> Austin, TX | <strong>May 2021 - October 2021</strong></p> <!-- Job location and date -->
+                <ul> <!-- Unordered list of job responsibilities -->
+                    <li>Resolved technical issues with Outlook, Mail, and Distribution groups efficiently.</li>
+                    <li>Documented all transactions and support interactions in ServiceNow.</li>
+                    <li>Resolved a wide range of tickets daily, averaging 20 tickets.</li>
+                    <li>Utilized ServiceNow to streamline ticket management and improve response times.</li>
+                    <li>Enhanced customer satisfaction by providing timely and effective technical support.</li>
+                </ul> <!-- End of job responsibilities list -->
+            </div> <!-- End of Help Desk Technician job entry -->
+        </section>
+        <section class="education fade-in"> <!-- Education section -->
+            <h2>Education</h2> <!-- Education heading -->
+            <p>
+                Bachelor of Science, 
+                <a href="https://www.wgu.edu/online-it-degrees/cloud-computing-bachelors-program.html" target="_blank" class="education-link">
+                    Cloud Computing <!-- Link to Cloud Computing program -->
+                </a>
+                | Western Governor's University | Salt Lake City, Utah | Expected 2026 <!-- Education details -->
+            </p>
+        </section> <!-- End of education section -->
+        
+        <section class="certifications"> <!-- Certifications section -->
+            <h2>Certifications</h2> <!-- Certifications heading -->
+            <div class="certification-columns"> <!-- Container for certification columns -->
+                <div class="column"> <!-- First column for certifications -->
+                    <ul class="certification-list">
+                        <li>
+                            <a href="https://www.credly.com/badges/e28fb41d-6bf5-4835-88a3-dabef4f7ecce" target="_blank" class="cert-link"> <!-- Link to CompTIA A+ certification -->
+                                <img src="images/A+.png" alt="CompTIA A+ Logo" class="cert-logo"> <!-- CompTIA A+ logo -->
+                                <span class="hover-text">View My Cert</span> <!-- Hover text for certification -->
+                            </a>
+                            <span>CompTIA A+ | 2021</span> <!-- Certification details -->
+                        </li>
+                        <li>
+                            <a href="https://www.credly.com/badges/8b12e8a9-49fa-404a-8085-c49ace785b63" target="_blank" class="cert-link"> <!-- Link to CompTIA Network+ certification -->
+                                <img src="images/Network+.png" alt="CompTIA Network+ Logo" class="cert-logo"> <!-- CompTIA Network+ logo -->
+                                <span class="hover-text">View My Cert</span> <!-- Hover text for certification -->
+                            </a>
+                            <span>CompTIA Network+ | 2022</span> <!-- Certification details -->
+                        </li>
+                        <li>
+                            <a href="https://www.credly.com/badges/d8f9c0c1-e6dd-40fc-9d77-b84af9473cb3" target="_blank" class="cert-link"> <!-- Link to CompTIA Security+ certification -->
+                                <img src="images/Security+.png" alt="CompTIA Security+ Logo" class="cert-logo"> <!-- CompTIA Security+ logo -->
+                                <span class="hover-text">View My Cert</span> <!-- Hover text for certification -->
+                            </a>
+                            <span>CompTIA Security+ | 2023</span> <!-- Certification details -->
+                        </li>
+                        <li>
+                            <a href="https://www.credly.com/badges/8fda9933-6ad0-4e5f-a8f9-d40e8970a0d7" target="_blank" class="cert-link"> <!-- Link to CompTIA Project+ certification -->
+                                <img src="images/Project+.png" alt="CompTIA Project+ Logo" class="cert-logo"> <!-- CompTIA Project+ logo -->
+                                <span class="hover-text">View My Cert</span> <!-- Hover text for certification -->
+                            </a>
+                            <span>CompTIA Project+ | 2023</span> <!-- Certification details -->
+                        </li>
+                    </ul>
+                </div>
+                <div class="column"> <!-- Second column for certifications -->
+                    <ul class="certification-list">
+                        <li>
+                            <a href="https://www.credly.com/badges/4ade93b0-be03-4826-81e3-8ad1980e5820" target="_blank" class="cert-link"> <!-- Link to CompTIA Cloud+ certification -->
+                                <img src="images/Cloud+.png" alt="CompTIA Cloud+ Logo" class="cert-logo"> <!-- CompTIA Cloud+ logo -->
+                                <span class="hover-text">View My Cert</span> <!-- Hover text for the certification -->
+                            </a>
+                            <span>CompTIA Cloud+ | 2023</span> <!-- Certification details -->
+                        </li>
+                        <li>
+                            <a href="https://learn.microsoft.com/api/credentials/share/en-us/FabianNuno-4629/BFD78BCEE36269B4?sharingId=E3A19F62801E95A5" target="_blank" class="cert-link"> <!-- Link to Microsoft Azure Administrator certification -->
+                                <img src="images/AZ104.png" alt="Microsoft AZ-104 Logo" class="cert-logo"> <!-- Microsoft Azure Administrator logo -->
+                                <span class="hover-text">View My Cert</span> <!-- Hover text for the certification -->
+                            </a>
+                            <span>Azure Administrator | 2023</span> <!-- Certification details -->
+                        </li>
+                        <li>
+                            <a href="https://cs.lpi.org/caf/Xamman/certification/verify/LPI000568729/hyxnk9aef7" target="_blank" class="cert-link"> <!-- Link to LPI Linux Essentials certification -->
+                                <img src="images/LPI.png" alt="LPI Linux Essentials Logo" class="cert-logo"> <!-- LPI Linux Essentials logo -->
+                                <span class="hover-text">View My Cert</span> <!-- Hover text for the certification -->
+                            </a>
+                            <span>LPI Linux Essentials | 2023</span> <!-- Certification details -->
+                        </li>
+                        <li>
+                            <img src="images/ITIL4.png" alt="ITIL 4 Logo" class="cert-logo"> <!-- ITIL 4 logo -->
+                            <span>ITIL® Foundation | 2024</span> <!-- Certification details -->
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section> <!-- End of certifications section -->
+        <footer class="block"> <!-- Footer section -->
+            <h2>Contact Information</h2> <!-- Contact Information heading -->
+            <ul> <!-- Unordered list for contact details -->
+                <li>Email: <a href="mailto:fnguno@gmail.com">fnguno@gmail.com</a></li> <!-- Email address -->
+                <li>Phone: 432-385-9785</li> <!-- Phone number -->
+            </ul> <!-- End of contact details list -->
+            <div class="linkedin-icon-container"> <!-- Container for LinkedIn icon in footer -->
+                <a href="https://www.linkedin.com/in/fabian-nuno" title="Visit my LinkedIn profile" target="_blank"> <!-- Link to LinkedIn profile -->
+                    <img src="images/linkedin.png" alt="LinkedIn Logo" class="linkedin-icon"> <!-- LinkedIn icon image -->
+                </a>
+                <a href="https://github.com/fnuno1/Azure-Resume-" title="Visit my GitHub profile" target="_blank"> 
+                <img src="images/github.png" alt="GitHub Logo" class="github-icon">
+                </a>
+            </div> <!-- End of LinkedIn icon container -->
+        </footer> <!-- End of footer section -->
+        </main> <!-- End of main content -->
+        </body> <!-- End of body section -->
+        </html> <!-- End of HTML document -->
+        >
+        
+
+
+        

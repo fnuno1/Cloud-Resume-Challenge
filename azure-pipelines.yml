@@ -1,0 +1,129 @@
+# ============================================================
+# Cloud Resume Challenge — Azure DevOps Pipeline
+# Org:     dev.azure.com/nufaze84
+# Project: Cloud_Resume-Challenge
+# Deploy:  Azure Static Web Apps (fabian-resume-site)
+# ============================================================
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - frontend/**
+      - azure-pipelines.yml
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - frontend/**
+
+variables:
+  - group: cloud-resume-secrets
+  - name: frontendPath
+    value: 'frontend'
+
+stages:
+
+- stage: Validate
+  displayName: 'Validate'
+  jobs:
+  - job: HTMLLint
+    displayName: 'HTML & CSS Validation'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+
+    - checkout: self
+      displayName: 'Checkout source'
+
+    - script: |
+        echo "=== Checking for required files ==="
+        if [ ! -f "$(frontendPath)/index.html" ]; then
+          echo "##vso[task.logissue type=error]index.html not found in frontend/"
+          exit 1
+        fi
+        echo "✓ index.html found"
+        if [ ! -f "$(frontendPath)/style.css" ]; then
+          echo "##vso[task.logissue type=error]style.css not found in frontend/"
+          exit 1
+        fi
+        echo "✓ style.css found"
+        if [ ! -d "$(frontendPath)/images" ]; then
+          echo "##vso[task.logissue type=warning]images/ directory not found"
+        else
+          echo "✓ images/ directory found"
+        fi
+      displayName: 'Verify required files exist'
+
+    - script: |
+        echo "=== Internal reference checks ==="
+        CSS_REF=$(grep -o 'href="[^"]*\.css"' $(frontendPath)/index.html | head -1 | sed 's/href="//;s/"//')
+        if [ -n "$CSS_REF" ] && [ ! -f "$(frontendPath)/$CSS_REF" ]; then
+          echo "##vso[task.logissue type=warning]CSS reference '$CSS_REF' not found"
+        else
+          echo "✓ CSS reference check passed"
+        fi
+        if grep -q "azurewebsites.net" "$(frontendPath)/index.html"; then
+          echo "✓ Visitor counter API endpoint found"
+        else
+          echo "##vso[task.logissue type=warning]Visitor counter API URL not found"
+        fi
+      displayName: 'Internal reference checks'
+      continueOnError: true
+
+    - script: |
+        echo "=== File size check ==="
+        HTML_SIZE=$(wc -c < "$(frontendPath)/index.html")
+        CSS_SIZE=$(wc -c < "$(frontendPath)/style.css")
+        echo "index.html: ${HTML_SIZE} bytes"
+        echo "style.css:  ${CSS_SIZE} bytes"
+        if [ "$HTML_SIZE" -lt 500 ]; then
+          echo "##vso[task.logissue type=error]index.html appears empty or corrupt"
+          exit 1
+        fi
+        echo "✓ File size checks passed"
+      displayName: 'File size sanity check'
+
+- stage: Deploy
+  displayName: 'Deploy to Azure Static Web Apps'
+  dependsOn: Validate
+  condition: |
+    and(
+      succeeded('Validate'),
+      eq(variables['Build.SourceBranch'], 'refs/heads/main'),
+      ne(variables['Build.Reason'], 'PullRequest')
+    )
+  jobs:
+  - deployment: DeployFrontend
+    displayName: 'Deploy frontend to fabian-resume-site'
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+
+          - checkout: self
+            displayName: 'Checkout source'
+
+          - task: AzureStaticWebApp@0
+            displayName: 'Deploy to Azure Static Web Apps'
+            inputs:
+              app_location: '$(frontendPath)'
+              output_location: ''
+              skip_api_build: true
+            env:
+              azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
+
+          - script: |
+              echo "=== Deployment complete ==="
+              echo "Site:    https://fabianresume.dev"
+              echo "Build:   $(Build.BuildNumber)"
+              echo "Commit:  $(Build.SourceVersion)"
+            displayName: 'Deployment summary'

@@ -1,143 +1,67 @@
-# 🌐 Cloud Resume Challenge — Fabian Nuno
+# Cloud Resume Challenge — Azure DevOps
 
-![CI/CD](https://img.shields.io/badge/GitHub%20Actions-ready-blue?logo=githubactions)
+Personal resume site built on Azure, managed via Azure DevOps CI/CD.
 
-This is my personal resume website built as part of the **Cloud Resume Challenge**.  
-It showcases my front-end development skills, certifications, and cloud readiness.  
-Backend, CI/CD, and Azure integrations will be added in the next phase.
-
----
-
-## 📊 Visitor Counter (Coming Soon)
-
-This project includes a placeholder for a dynamic visitor counter.  
-The final implementation will use:
-
-- Azure Functions (JavaScript or Python)
-- Azure Cosmos DB or Table Storage
-- A secure API endpoint
-- JavaScript fetch call to update the counter in real time
-
-Once deployed, the counter will automatically update on each page load.
-
-## 📄 Project Overview
-
-This resume site is built using:
-
-- **HTML5** for structure  
-- **CSS3** for styling and layout  
-- **Google Fonts** for clean typography  
-- **Local images** for icons and certification badges  
-- **GitHub** for version control and hosting  
-
-The design uses a dark theme, responsive layout, hover effects, and clean typography to create a professional and modern resume experience.
+**Live site:** https://fabianresume.dev
+**Azure DevOps:** dev.azure.com/nufaze84/Cloud_Resume-Challenge
 
 ---
 
-## 🧰 Technologies Used
+## Architecture
 
-- HTML5  
-- CSS3  
-- Google Fonts (Roboto)  
-- Font Awesome  
-- GitHub  
-- *(Azure Static Web Apps + Azure Functions coming soon)*
+```
+Browser
+  └── Azure Static Web App (fabian-resume-site)
+        └── frontend/index.html + style.css
+              └── JavaScript fetch → Azure Function App (fabian-resume-api)
+                    └── GetResumeCounter → Azure Cosmos DB
+```
 
-## 📁 File Structure
+## Pipeline
 
-/CLOUD-RESUME-CHALLENGE
-│── index.html
-│── styles.css
-│── /images
-├── linkedin.png
-├── github.png
-├── AZ104.png  
-├── A+.png
-├── Network+.png
-├── Security+.png
-├── Project+.png
-├── Cloud+.png
-├── LPI.png
-│ └── ITIL4.png
+```
+Push to feature branch
+  └── PR created → Validate stage runs automatically
+        ├── File existence checks
+        ├── Internal reference checks
+        └── File size sanity check
+  └── PR approved + merged to main
+        └── Deploy stage triggers
+              └── Manual approval gate (production environment)
+                    └── Azure Static Web Apps deployment
+```
+
+## Repo Structure
+
+```
+/
+├── frontend/
+│   ├── index.html
+│   ├── style.css
+│   └── images/
+├── .azuredevops/
+│   └── pull_request_template.md
+├── azure-pipelines.yml
 └── README.md
+```
 
----
+## Setup
 
-## 🚀 How to Run
+### Variable Group
+Pipelines → Library → Variable Groups → cloud-resume-secrets
+- AZURE_STATIC_WEB_APPS_API_TOKEN (secret) — from fabian-resume-site → Manage deployment token
 
-1. Clone or download the repository.
-2. Open `index3.html` in any browser.
-3. All assets are local — no backend required.
+### Environment Approval Gate
+Pipelines → Environments → production → Approvals and checks → Approvals
+- Required approver: nufaze84
 
----
+### Branch Policy (main)
+- Require PR before merge
+- Require linked work item
+- Require Validate stage to pass
 
-## 🎯 Goals
+## Resources
 
-- Build a professional resume site from scratch
-- Showcase certifications and experience visually
-- Prepare for cloud deployment (Azure Static Web Apps or AWS S3)
-- Practice GitHub workflows and commits
-- Implement CI/CD with GitHub Actions
-
----
-
-## 🌐 Domain & DNS Configuration
-
-To prepare the resume site for Azure hosting and HTTPS, the domain fabianresume.dev was purchased through Namecheap and delegated to Azure for DNS management.
-
-Steps Completed
-Created an Azure DNS Zone for fabianresume.dev
-
-Updated Namecheap nameservers to point to Azure:
-
-ns1-04.azure-dns.com
-
-ns2-04.azure-dns.net
-
-ns3-04.azure-dns.org
-
-ns4-04.azure-dns.info
-
-Verified DNS propagation using global DNS tools
-
-Azure DNS is now the authoritative DNS provider for the domain
-
-This setup enables Azure Static Web Apps to automatically validate domain ownership, issue HTTPS certificates, and manage routing cleanly.
-
-## 🔧 Upcoming Domain Integration
-
-Once the Static Web App is deployed, the following DNS records will be added inside Azure DNS:
-
-TXT record for domain verification
-
-CNAME or A record for custom domain routing
-
-Automatic HTTPS via Azure-managed certificates
-
-This will make the site publicly accessible at:<https://fabianresume.dev>
-
-## 📌 Next Steps
-
-- Add visitor counter using JavaScript + Azure Function
-- Deploy to Azure Static Web Apps
-- Add HTTPS and custom domain
-- Integrate GitHub Actions for CI/CD
-
----
-
-## 👤 About Me
-
-**Fabian Nuno** — Azure Administrator and founder of Total Site Solutions  
-Focused on secure infrastructure, automation, and empowering teams through scalable systems.  
-Currently completing a B.S. in Cloud Computing at WGU.
-
----
-
-## 📬 Contact
-
-- Email: [fnguno@gmail.com](mailto:fnguno@gmail.com)
-- GitHub: [fnuno1](https://github.com/fnuno1)
-- LinkedIn: [fabian-nuno](https://www.linkedin.com/in/fabian-nuno)
-- Location: Georgetown, TX
-
----
+- Static Web App: fabian-resume-site (cloud-resume-challenge RG)
+- Function App: fabian-resume-api (cloud-resume-challenge RG)
+- Custom domain: fabianresume.dev
