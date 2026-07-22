@@ -22,6 +22,8 @@
 # merged into main (not on a PR). It is guarded by a manual
 # approval gate configured in the Azure DevOps "production"
 # environment. You must explicitly approve before files go live.
+# The approval gate has a 3-day (4320 minute) timeout — if not
+# approved within 3 days the deployment auto-cancels.
 #
 # VARIABLE GROUP:
 # The pipeline reads secrets from a variable group named
@@ -36,12 +38,30 @@
 # automatic CRLF conversion on Windows from corrupting files
 # during checkout. Never remove .gitattributes from this repo.
 #
-# DEPLOY TASK FIX (v2):
-# Added production_branch: 'main' to the AzureStaticWebApp@0 task.
-# This explicitly tells the task which Static Web App environment
-# to target, resolving the "No matching Static Web App was found"
-# error that occurs when the task cannot identify the correct
-# deployment environment from the token alone.
+# WHY WE USE SWA CLI INSTEAD OF AzureStaticWebApp@0 TASK:
+# ---------------------------------------------------------------
+# The AzureStaticWebApp@0 Microsoft task was our original deploy
+# method. It failed with "No matching Static Web App was found"
+# because Azure Static Web Apps requires a repository linkage
+# (GitHub or Azure DevOps) when using that task. The task cannot
+# deploy to a Static Web App that has no registered source repo.
+#
+# We disconnected the GitHub source using:
+#   az staticwebapp disconnect --name fabian-resume-site \
+#     --resource-group cloud-resume-challenge
+#
+# After disconnecting, the AzureStaticWebApp@0 task continued to
+# fail because Azure Static Web Apps enforces repo linkage at the
+# platform level when using that task — even with a valid token.
+#
+# SOLUTION: Azure Static Web Apps CLI (swa deploy)
+# The SWA CLI authenticates purely via deployment token with no
+# repository linkage required. This gives us full control over
+# the deployment pipeline without Azure managing it for us.
+# This is the professional approach for custom CI/CD pipelines.
+#
+# The original AzureStaticWebApp@0 task is preserved below as a
+# commented-out reference so the architectural decision is clear.
 # ============================================================
 
 # ---------------------------------------------------------------
@@ -94,13 +114,13 @@ stages:
 # If any step fails, the pipeline stops and Deploy never runs.
 # ---------------------------------------------------------------
 - stage: Validate
-  displayName: 'Validate'   # Label shown in the Azure DevOps UI
+  displayName: 'Validate'
   jobs:
 
   - job: HTMLLint
     displayName: 'HTML & CSS Validation'
     pool:
-      vmImage: 'ubuntu-latest'   # Use a fresh Linux agent for each run
+      vmImage: 'ubuntu-latest'   # Fresh Linux agent for each run
 
     steps:
 
@@ -110,34 +130,30 @@ stages:
 
     # -------------------------------------------------------
     # STEP 1: Verify required files exist
-    # The pipeline cannot deploy what isn't there.
-    # Fails the job immediately if index.html or style.css
-    # are missing — emits an Azure DevOps error annotation
-    # so it shows up clearly in the pipeline UI.
+    # Fails immediately if index.html or style.css are missing.
+    # ##vso[task.logissue] writes a visible error in the UI.
     # -------------------------------------------------------
     - script: |
         echo "=== Checking for required files ==="
 
-        # Check that the main HTML file is present
-        # ##vso[task.logissue] writes a red error into the pipeline log UI
+        # Verify main HTML file exists
         if [ ! -f "$(frontendPath)/index.html" ]; then
           echo "##vso[task.logissue type=error]index.html not found in frontend/"
-          exit 1   # Non-zero exit code fails the step and stops the job
+          exit 1
         fi
         echo "✓ index.html found"
 
-        # Check that the stylesheet is present
+        # Verify stylesheet exists
         if [ ! -f "$(frontendPath)/style.css" ]; then
           echo "##vso[task.logissue type=error]style.css not found in frontend/"
           exit 1
         fi
         echo "✓ style.css found"
 
-        # Warn (but do not fail) if the images folder is missing
-        # A missing images folder won't break deployment but will
-        # cause broken cert logo images on the live site
+        # Warn if images folder is missing — won't block deploy but
+        # will cause broken cert logo images on the live site
         if [ ! -d "$(frontendPath)/images" ]; then
-          echo "##vso[task.logissue type=warning]images/ directory not found — cert logos may be broken on live site"
+          echo "##vso[task.logissue type=warning]images/ directory not found — cert logos may be broken"
         else
           echo "✓ images/ directory found"
         fi
@@ -145,56 +161,48 @@ stages:
 
     # -------------------------------------------------------
     # STEP 2: Internal reference checks
-    # Verifies that the CSS file referenced in index.html
-    # actually exists, and that the visitor counter API URL
-    # is still present in the HTML.
-    # continueOnError: true means warnings here won't block
-    # the pipeline — they show as yellow, not red.
+    # Verifies CSS link in HTML points to an existing file,
+    # and that the visitor counter API URL is still present.
+    # continueOnError: true — warnings don't block the pipeline
     # -------------------------------------------------------
     - script: |
         echo "=== Internal reference checks ==="
 
-        # Extract the href value from the <link> stylesheet tag in index.html
-        # Example: href="style.css" → extracts "style.css"
+        # Extract CSS href from the <link> tag in index.html
         CSS_REF=$(grep -o 'href="[^"]*\.css"' $(frontendPath)/index.html | head -1 | sed 's/href="//;s/"//')
 
-        # If a CSS reference was found but the file doesn't exist, warn
+        # Warn if CSS file referenced in HTML doesn't exist on disk
         if [ -n "$CSS_REF" ] && [ ! -f "$(frontendPath)/$CSS_REF" ]; then
-          echo "##vso[task.logissue type=warning]CSS reference '$CSS_REF' found in index.html but file does not exist"
+          echo "##vso[task.logissue type=warning]CSS reference '$CSS_REF' not found"
         else
           echo "✓ CSS reference check passed"
         fi
 
-        # Confirm the visitor counter API endpoint is still in the HTML
-        # If someone accidentally deletes the script block, this catches it
+        # Confirm visitor counter API endpoint is still in the HTML
         if grep -q "azurewebsites.net" "$(frontendPath)/index.html"; then
-          echo "✓ Visitor counter API endpoint found (fabian-resume-api.azurewebsites.net)"
+          echo "✓ Visitor counter API endpoint found"
         else
-          echo "##vso[task.logissue type=warning]Visitor counter API URL not found in index.html — counter may be broken"
+          echo "##vso[task.logissue type=warning]Visitor counter API URL missing — counter may be broken"
         fi
       displayName: 'Internal reference checks'
-      continueOnError: true   # Warnings only — don't fail the pipeline on these
+      continueOnError: true
 
     # -------------------------------------------------------
     # STEP 3: File size sanity check
-    # Catches cases where index.html was accidentally emptied
-    # or replaced with a 0-byte file. A valid resume HTML
-    # should always be well over 500 bytes.
+    # A valid index.html must be at least 500 bytes.
+    # Catches accidental empty file commits.
     # -------------------------------------------------------
     - script: |
         echo "=== File size check ==="
 
-        # Get the byte size of each file
         HTML_SIZE=$(wc -c < "$(frontendPath)/index.html")
         CSS_SIZE=$(wc -c < "$(frontendPath)/style.css")
 
         echo "index.html: ${HTML_SIZE} bytes"
         echo "style.css:  ${CSS_SIZE} bytes"
 
-        # A valid index.html must be at least 500 bytes
-        # If it's smaller something went very wrong (empty file, encoding issue, etc.)
         if [ "$HTML_SIZE" -lt 500 ]; then
-          echo "##vso[task.logissue type=error]index.html is ${HTML_SIZE} bytes — appears empty or corrupt. Aborting."
+          echo "##vso[task.logissue type=error]index.html is ${HTML_SIZE} bytes — appears empty or corrupt"
           exit 1
         fi
 
@@ -203,26 +211,21 @@ stages:
 
 # ---------------------------------------------------------------
 # STAGE 2: DEPLOY
-# Deploys the frontend folder to Azure Static Web Apps.
+# Deploys frontend/ to Azure Static Web Apps using swa CLI.
 #
-# CONDITIONS — this stage only runs when ALL of these are true:
-#   1. The Validate stage passed (no errors)
-#   2. The source branch is main (not a feature branch)
-#   3. This is NOT a PR build (PRs only run Validate, not Deploy)
+# CONDITIONS — only runs when ALL of these are true:
+#   1. Validate stage passed
+#   2. Source branch is main (not a feature branch)
+#   3. This is NOT a PR build
 #
-# The "environment: production" line links this deployment to the
-# Azure DevOps environment named "production". That environment
-# has a manual approval gate configured — you must click Approve
-# in the Azure DevOps UI before files actually ship to Azure.
+# APPROVAL GATE: configured in Pipelines → Environments → production
+#   - Required approver: nufaze84
+#   - Timeout: 3 days (4320 minutes) — auto-cancels if not approved
 # ---------------------------------------------------------------
 - stage: Deploy
   displayName: 'Deploy to Azure Static Web Apps'
-  dependsOn: Validate   # Cannot start until Validate finishes successfully
+  dependsOn: Validate
 
-  # Only deploy when:
-  #   - Validate succeeded
-  #   - We are on the main branch (merged code, not a PR)
-  #   - The build was not triggered by a pull request
   condition: |
     and(
       succeeded('Validate'),
@@ -232,20 +235,17 @@ stages:
 
   jobs:
 
-  # Use a deployment job (not a regular job) so Azure DevOps
-  # tracks deployment history and links it to the environment
   - deployment: DeployFrontend
     displayName: 'Deploy frontend to fabian-resume-site'
     pool:
       vmImage: 'ubuntu-latest'
 
-    # "production" is the Azure DevOps environment name.
-    # Go to Pipelines → Environments → production → Approvals
-    # to configure who must approve before deployment proceeds.
+    # Links this deployment to the "production" environment in
+    # Azure DevOps — where the manual approval gate is configured
     environment: 'production'
 
     strategy:
-      runOnce:          # Deploy once, no rolling or canary strategy needed
+      runOnce:
         deploy:
           steps:
 
@@ -254,43 +254,82 @@ stages:
             displayName: 'Checkout source'
 
           # -------------------------------------------------------
-          # DEPLOY STEP: Push files to Azure Static Web Apps
-          # AzureStaticWebApp@0 is the official Microsoft task
-          # that handles the upload to Azure Static Web Apps.
-          #
-          # app_location:    folder containing index.html, style.css, images/
-          # output_location: empty — no build step needed for pure HTML/CSS
-          # skip_api_build:  true — Function App (fabian-resume-api) is
-          #                  deployed separately, skip it here
-          # production_branch: tells the task this targets the production
-          #                  environment on the main branch — this is the
-          #                  key fix that resolves "No matching Static Web App
-          #                  was found" by giving the task explicit context
-          #                  about which environment to deploy to.
-          #
-          # The token is passed via env: using the exact lowercase variable
-          # name the AzureStaticWebApp@0 task expects. Casing matters —
-          # azure_static_web_apps_api_token must be all lowercase.
-          # It is injected at runtime from the cloud-resume-secrets variable
-          # group and never appears in logs or code.
+          # ORIGINAL DEPLOY METHOD — AzureStaticWebApp@0 task
+          # KEPT AS REFERENCE — DO NOT UNCOMMENT WITHOUT READING BELOW
           # -------------------------------------------------------
-          - task: AzureStaticWebApp@0
-            displayName: 'Deploy to Azure Static Web Apps (fabian-resume-site)'
-            inputs:
-              app_location: '$(frontendPath)'   # frontend/ — source files to deploy
-              output_location: ''               # No build output — deploy as-is
-              skip_api_build: true              # Skip API — Function App managed separately
-              production_branch: 'main'         # Explicitly target production environment on main
-            env:
-              # Token sourced from cloud-resume-secrets variable group (Pipelines → Library)
-              # Grants pipeline agent write access to fabian-resume-site
-              # Variable name must be exactly: azure_static_web_apps_api_token (all lowercase)
-              azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
+          # The AzureStaticWebApp@0 task was our original approach.
+          # It failed consistently with:
+          #   "No matching Static Web App was found or the api key was invalid"
+          #
+          # ROOT CAUSE: Azure Static Web Apps enforces repository linkage
+          # when using this task. The Static Web App must be actively linked
+          # to a GitHub or Azure DevOps repo for the task to authenticate.
+          # After disconnecting GitHub via az staticwebapp disconnect, the
+          # task had no registered repo to match against — causing the error
+          # regardless of whether the token itself was valid.
+          #
+          # This is an Azure platform constraint, not a YAML or token issue.
+          # The task is designed for managed pipelines where Azure controls
+          # the repo connection. For custom pipelines, use swa CLI instead.
+          #
+          # - task: AzureStaticWebApp@0
+          #   displayName: 'Deploy to Azure Static Web Apps (fabian-resume-site)'
+          #   inputs:
+          #     app_location: '$(frontendPath)'
+          #     output_location: ''
+          #     skip_api_build: true
+          #     production_branch: 'main'
+          #   env:
+          #     azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
+          # -------------------------------------------------------
 
           # -------------------------------------------------------
-          # SUMMARY STEP: Print deployment details to the log
-          # Useful for audit trail — shows exactly what build
-          # number and commit SHA were deployed to production
+          # CURRENT DEPLOY METHOD — Azure Static Web Apps CLI (swa)
+          # -------------------------------------------------------
+          # The SWA CLI is the official Azure Static Web Apps command
+          # line tool. Unlike the AzureStaticWebApp@0 task, it
+          # authenticates purely via deployment token with no repository
+          # linkage required — giving us full control over deployment
+          # without Azure managing the pipeline for us.
+          #
+          # HOW IT WORKS:
+          # 1. npm installs the SWA CLI globally on the agent
+          # 2. swa deploy points at the frontend/ folder
+          # 3. The deployment token from the variable group authenticates
+          #    the agent to fabian-resume-site
+          # 4. Files are uploaded directly to Azure Static Web Apps
+          #
+          # The --env production flag targets the production environment
+          # of the Static Web App (as opposed to staging/preview slots).
+          # -------------------------------------------------------
+
+          # Step 1: Install the Azure Static Web Apps CLI
+          # @latest ensures we always use the current stable version
+          # The CLI is published as an npm package by Microsoft
+          - script: |
+              echo "=== Installing Azure Static Web Apps CLI ==="
+              npm install -g @azure/static-web-apps-cli@latest
+              echo "✓ SWA CLI installed"
+              swa --version   # Print version to log for audit trail
+            displayName: 'Install SWA CLI'
+
+          # Step 2: Deploy frontend/ to fabian-resume-site
+          # --app-location: the folder to deploy (frontend/)
+          # --env production: target the production environment slot
+          # --deployment-token: injected from the variable group secret
+          #   Never hardcode this token — it grants write access to the site
+          - script: |
+              echo "=== Deploying to Azure Static Web Apps ==="
+              swa deploy $(frontendPath) \
+                --env production \
+                --deployment-token $(AZURE_STATIC_WEB_APPS_API_TOKEN)
+            displayName: 'Deploy via SWA CLI'
+
+          # -------------------------------------------------------
+          # SUMMARY STEP
+          # Prints deployment details to the log for audit trail.
+          # Runs after successful deployment — shows exactly what
+          # build number and commit SHA went to production.
           # -------------------------------------------------------
           - script: |
               echo "============================================"
