@@ -9,92 +9,52 @@
                  → GetResumeCounter → Azure Cosmos DB
      Fonts:      Inter (body) + JetBrains Mono (labels/meta)
                  loaded from Google Fonts CDN
+     Last updated: July 2026 — synced with LCPtracker resume version
      ============================================================ -->
-<html lang="en"> <!-- lang="en" tells screen readers and search engines this is English -->
+<html lang="en">
 <head>
-    <!-- UTF-8 encoding supports all special characters including em dashes and middot -->
     <meta charset="UTF-8">
-
-    <!-- Responsive viewport — prevents mobile browsers from zooming out to fit desktop layout -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Browser tab title -->
     <title>Fabian Nuno — DevOps Engineer</title>
-
-    <!-- External stylesheet — all visual styling lives in style.css -->
     <link rel="stylesheet" href="style.css">
-
-    <!-- Google Fonts:
-         Inter         — clean modern sans-serif for body text and headings
-         JetBrains Mono — monospace font used for labels, dates, cert meta, and the visitor counter
-         wght@300;400;500;600;700 loads multiple font weights so we can bold/semibold selectively -->
+    <!-- Google Fonts: Inter (body) + JetBrains Mono (labels/meta/counter) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
     <!-- ============================================================
-         HEADER
-         Contains: name, title line with cert badges, social icons,
-         and the live visitor counter bar pulled from Azure Functions
+         HEADER — name, cert title line, social icons, visitor counter
          ============================================================ -->
     <header>
-
-        <!-- header-inner constrains content to max-width and lays out
-             the name/title block on the left and social icons on the right -->
         <div class="header-inner">
-
-            <!-- Left side: eyebrow label, name, cert title line -->
             <div class="header-text">
-                <!-- Eyebrow label — small monospace text above the name -->
+                <!-- Small monospace eyebrow label above the name -->
                 <p class="eyebrow">Cloud Resume Challenge</p>
-
-                <!-- Main name heading — largest text on the page -->
                 <h1>Fabian Nuno</h1>
-
-                <!-- Cert summary line — shows all three Azure certs inline
-                     &nbsp;·&nbsp; is a non-breaking space + middot separator -->
+                <!-- Cert summary line — &nbsp;·&nbsp; = non-breaking space + middot -->
                 <p class="title-line">DevOps Engineer &nbsp;·&nbsp; Azure Certified &nbsp;·&nbsp; AZ-400 &nbsp;·&nbsp; AZ-204 &nbsp;·&nbsp; AZ-104</p>
             </div>
-
-            <!-- Right side: LinkedIn and GitHub icon buttons -->
             <div class="header-links">
-                <!-- LinkedIn — opens in new tab, title shows on hover -->
                 <a href="https://www.linkedin.com/in/fabian-nuno" target="_blank" class="icon-link" title="LinkedIn">
                     <img src="images/linkedin.png" alt="LinkedIn" class="header-icon">
                 </a>
-
-                <!-- GitHub portfolio — links to fnuno1 profile -->
                 <a href="https://github.com/fnuno1" target="_blank" class="icon-link" title="GitHub">
                     <img src="images/github.png" alt="GitHub" class="header-icon">
                 </a>
             </div>
         </div>
-
-        <!-- Visitor counter bar — sits below the name/links row
-             The actual count is injected by the updateVisitorCount()
-             JavaScript function at the bottom of this file.
-             Default display is "—" until the API responds. -->
+        <!-- Visitor counter — count injected by updateVisitorCount() JS below -->
         <div class="visitor-bar">
             <span class="visitor-label">Live visitor count</span>
-            <!-- id="visitor-count" is the target for the JS fetch result -->
             <span class="visitor-count" id="visitor-count">—</span>
         </div>
+    </header>
 
-    </header><!-- /header -->
-
-    <!-- ============================================================
-         MAIN CONTENT
-         Sections: Summary, Experience, Education, Certifications
-         Each section uses class="section" for consistent spacing
-         and class="section-title" for the monospace section headers
-         ============================================================ -->
     <main>
 
         <!-- --------------------------------------------------------
-             SUMMARY SECTION
-             Brief professional summary — leads with AZ-400 cert
-             and emphasizes DevOps, CI/CD, and security bridge role
+             SUMMARY — leads with AZ-400, emphasizes DevOps + security
              -------------------------------------------------------- -->
         <section class="section" id="summary">
             <h2 class="section-title">Summary</h2>
@@ -104,14 +64,13 @@
                 Proven ability to reduce manual process time, enforce compliance at scale, and bridge security and engineering teams.
                 Holds nine certifications and a B.S. in Cloud Computing from WGU.
             </p>
-        </section><!-- /summary -->
+        </section>
 
         <!-- --------------------------------------------------------
-             EXPERIENCE SECTION
-             Each job is a .job card with:
-               .job-header  — title, company, location, date
-               .job-list    — bullet points (› character via CSS ::before)
-             Jobs are listed most recent first.
+             EXPERIENCE — each job is a bordered .job card
+             job-header: title/company left, location/date right
+             job-list: › bullet points injected via CSS ::before
+             Bullets synced with LCPtracker resume version (July 2026)
              -------------------------------------------------------- -->
         <section class="section" id="experience">
             <h2 class="section-title">Experience</h2>
@@ -123,25 +82,24 @@
                         <h3 class="job-title">Azure Administrator</h3>
                         <p class="job-company">Total Site Solutions</p>
                     </div>
-                    <!-- job-meta floats right — location above date -->
                     <div class="job-meta">
                         <span class="job-location">Round Rock, TX</span>
                         <span class="job-date">Sep 2023 – Present</span>
                     </div>
                 </div>
                 <ul class="job-list">
-                    <!-- Hybrid identity — AD + Entra ID integration -->
-                    <li>Architected hybrid identity environment integrating on-premises AD with Entra ID across a growing organization.</li>
-                    <!-- The TSS IT Automation Tool — headline achievement -->
-                    <li>Built and deployed a CI/CD pipeline in Azure DevOps with PSScriptAnalyzer, Pester tests, and gated approvals — reducing IT onboarding from 60 minutes to under 5 minutes.</li>
-                    <!-- Zero Trust security stack -->
-                    <li>Deployed Zero Trust security posture including Conditional Access, Intune MDM, Microsoft Defender for Endpoint, and Privileged Identity Management.</li>
-                    <!-- Secure Score improvement -->
-                    <li>Raised Microsoft Secure Score from the low 40s to 70%+ through systematic control implementation.</li>
-                    <!-- Cost optimization -->
-                    <li>Reduced operational costs by 25% through cloud resource optimization and license right-sizing.</li>
+                    <!-- Org growth + hybrid identity — 75 to nearly 400 employees -->
+                    <li>Architected hybrid identity environment integrating on-premises Active Directory with Entra ID as the organization scaled from 75 to nearly 400 employees.</li>
+                    <!-- TSS IT Automation Tool — exact numbers from LCPtracker resume -->
+                    <li>Built a 5-stage CI/CD pipeline in Azure DevOps with PSScriptAnalyzer linting, 33 Pester tests, and gated approvals — automating IT onboarding and cutting provisioning time from 30-60 minutes to under 5 minutes.</li>
+                    <!-- Zero Trust stack with specifics -->
+                    <li>Deployed Zero Trust security posture including 22+ Conditional Access policies, Intune MDM across 232+ devices, Microsoft Defender for Endpoint, and Privileged Identity Management.</li>
+                    <!-- Secure Score — exact number -->
+                    <li>Raised Microsoft Secure Score from the low 40s to 71.65% through systematic control implementation and compliance hardening.</li>
+                    <!-- Helpdesk team -->
+                    <li>Hired and trained 4 helpdesk employees, establishing IT support processes and documentation as the organization scaled.</li>
                 </ul>
-            </div><!-- /job 1 -->
+            </div>
 
             <!-- JOB 2: IT Technician II — Total Site Solutions -->
             <div class="job">
@@ -156,21 +114,24 @@
                     </div>
                 </div>
                 <ul class="job-list">
-                    <li>Acted as primary IT liaison for C-level executives, ensuring seamless technology support.</li>
-                    <li>Managed $20,000+ equipment inventory with proper utilization and security controls.</li>
-                    <li>Administered Active Directory, Group Policies, user accounts, permissions, and software licenses.</li>
-                    <li>Executed comprehensive Windows administration across a 200-device network.</li>
-                    <li>Developed automated workflows that reduced support ticket resolution time by 30%.</li>
+                    <!-- C-suite liaison -->
+                    <li>Acted as primary IT liaison for C-level executives, ensuring seamless technology support as the sole IT technician for a 75-person organization.</li>
+                    <!-- Infrastructure and AD -->
+                    <li>Administered Active Directory, Group Policies, user accounts, permissions, and software licenses across a growing user base.</li>
+                    <!-- Windows administration -->
+                    <li>Executed comprehensive Windows administration across a 200+ device network including imaging, deployment, and lifecycle management.</li>
+                    <!-- Automation -->
+                    <li>Developed automated workflows that reduced support ticket resolution time by 30% and established IT documentation standards.</li>
                 </ul>
-            </div><!-- /job 2 -->
+            </div>
 
             <!-- JOB 3: Help Desk Technician — Sun Auto Tire & Service -->
             <div class="job">
                 <div class="job-header">
                     <div>
                         <h3 class="job-title">Help Desk Technician</h3>
+                        <!-- &amp; is the HTML entity for & — required in HTML -->
                         <p class="job-company">Sun Auto Tire &amp; Service</p>
-                        <!-- &amp; is the HTML entity for & — required in HTML attributes and content -->
                     </div>
                     <div class="job-meta">
                         <span class="job-location">United States</span>
@@ -182,7 +143,7 @@
                     <li>Managed end-user support for 100+ accounts through Active Directory.</li>
                     <li>Created comprehensive help desk documentation with step-by-step instructions.</li>
                 </ul>
-            </div><!-- /job 3 -->
+            </div>
 
             <!-- JOB 4: Help Desk Technician — Apex Systems / Whole Foods -->
             <div class="job">
@@ -201,7 +162,7 @@
                     <li>Developed automated workflows in ServiceNow, boosting resolution efficiency by 30%.</li>
                     <li>Trained new hires on IT support best practices and ServiceNow usage.</li>
                 </ul>
-            </div><!-- /job 4 -->
+            </div>
 
             <!-- JOB 5: Help Desk Technician — Capgemini -->
             <div class="job">
@@ -219,14 +180,13 @@
                     <li>Resolved technical issues with Outlook, mail, and distribution groups — averaging 20 tickets daily.</li>
                     <li>Documented all transactions and support interactions in ServiceNow.</li>
                 </ul>
-            </div><!-- /job 5 -->
+            </div>
 
-        </section><!-- /experience -->
+        </section>
 
         <!-- --------------------------------------------------------
-             EDUCATION SECTION
-             Single entry — WGU B.S. Cloud Computing
-             edu-row lays out degree name left, year right
+             EDUCATION — WGU B.S. Cloud Computing
+             edu-row: degree name left, year right via flexbox
              -------------------------------------------------------- -->
         <section class="section" id="education">
             <h2 class="section-title">Education</h2>
@@ -234,46 +194,46 @@
                 <div>
                     <p class="edu-degree">Bachelor of Science, Cloud Computing</p>
                     <p class="edu-school">
-                        <!-- Links directly to the WGU Cloud Computing program page -->
                         <a href="https://www.wgu.edu/online-it-degrees/cloud-computing-bachelors-program.html" target="_blank" class="edu-link">Western Governors University</a>
                         &nbsp;·&nbsp; Salt Lake City, Utah
                     </p>
                 </div>
-                <!-- Year floats to the right via flex justify-content: space-between -->
+                <!-- Year floats right via flex justify-content: space-between -->
                 <span class="edu-date">2026</span>
             </div>
-        </section><!-- /education -->
+        </section>
 
         <!-- --------------------------------------------------------
-             CERTIFICATIONS SECTION
-             cert-grid is a flex column of cert-item rows.
-             "featured" class adds blue tint — used for Azure certs.
-             Each cert-item contains: logo | name + meta | "View" badge
-             The "View" badge fades in on hover via CSS opacity transition.
-             ITIL has no Credly link so it uses class="no-link" and
-             no <a> wrapper — hover styles are suppressed for it.
+             CERTIFICATIONS
+             cert-grid: single-column flex list of cert-item rows
+             "featured" class: blue tint for Azure certs (top 3)
+             "no-link" class: suppresses hover on ITIL (no Credly URL)
+             "View" badge: opacity 0 by default, fades in on hover
+
+             IMAGE FILENAMES:
+             AZ-400.png and AZ-204.png saved with dashes
+             AZ104.png and all CompTIA/LPI use original filenames
              -------------------------------------------------------- -->
         <section class="section" id="certifications">
             <h2 class="section-title">Certifications</h2>
             <div class="cert-grid">
 
-                <!-- AZ-400: Azure DevOps Engineer Expert — top of list, featured -->
+                <!-- AZ-400: Azure DevOps Engineer Expert — URL verified July 2026 -->
                 <div class="cert-item featured">
-                    <a href="https://learn.microsoft.com/api/credentials/share/en-us/FabianNuno-4629/BFD78BCEE36269B4?sharingId=E3A19F62801E95A5" target="_blank" class="cert-link">
-                        <img src="images/AZ400.png" alt="AZ-400" class="cert-logo">
+                    <a href="https://learn.microsoft.com/api/credentials/share/en-us/FabianNuno-4629/28AC06E23317E732?sharingId=E3A19F62801E95A5" target="_blank" class="cert-link">
+                        <img src="images/AZ-400.png" alt="AZ-400" class="cert-logo">
                         <div class="cert-info">
                             <span class="cert-name">Azure DevOps Engineer Expert</span>
                             <span class="cert-meta">AZ-400 &nbsp;·&nbsp; 2026</span>
                         </div>
-                        <span class="cert-badge">View</span> <!-- fades in on hover -->
+                        <span class="cert-badge">View</span>
                     </a>
                 </div>
 
-                <!-- AZ-204: Azure Developer Associate — featured -->
-                <!-- TODO: Update href to the correct AZ-204 Credly/MS Learn share URL -->
+                <!-- AZ-204: Azure Developer Associate — URL verified July 2026 -->
                 <div class="cert-item featured">
-                    <a href="https://learn.microsoft.com/api/credentials/share/en-us/FabianNuno-4629/BFD78BCEE36269B4?sharingId=E3A19F62801E95A5" target="_blank" class="cert-link">
-                        <img src="images/AZ204.png" alt="AZ-204" class="cert-logo">
+                    <a href="https://learn.microsoft.com/api/credentials/share/en-us/FabianNuno-4629/830A193D5DCE3793?sharingId=E3A19F62801E95A5" target="_blank" class="cert-link">
+                        <img src="images/AZ-204.png" alt="AZ-204" class="cert-logo">
                         <div class="cert-info">
                             <span class="cert-name">Azure Developer Associate</span>
                             <span class="cert-meta">AZ-204 &nbsp;·&nbsp; 2025</span>
@@ -282,7 +242,7 @@
                     </a>
                 </div>
 
-                <!-- AZ-104: Azure Administrator Associate — featured -->
+                <!-- AZ-104: Azure Administrator Associate — URL verified July 2026 -->
                 <div class="cert-item featured">
                     <a href="https://learn.microsoft.com/api/credentials/share/en-us/FabianNuno-4629/BFD78BCEE36269B4?sharingId=E3A19F62801E95A5" target="_blank" class="cert-link">
                         <img src="images/AZ104.png" alt="AZ-104" class="cert-logo">
@@ -366,9 +326,7 @@
                     </a>
                 </div>
 
-                <!-- ITIL 4 Foundation — no public Credly link available
-                     class="no-link" disables hover effects in CSS
-                     No <a> wrapper since there is no URL to link to -->
+                <!-- ITIL 4 Foundation — no public Credly link, no-link suppresses hover -->
                 <div class="cert-item no-link">
                     <img src="images/ITIL4.png" alt="ITIL 4" class="cert-logo">
                     <div class="cert-info">
@@ -377,29 +335,21 @@
                     </div>
                 </div>
 
-            </div><!-- /cert-grid -->
-        </section><!-- /certifications -->
+            </div>
+        </section>
 
-    </main><!-- /main -->
+    </main>
 
     <!-- ============================================================
-         FOOTER
-         Contains: name, email, phone, social icon links, and
-         a tech stack note showing what powers this site
+         FOOTER — contact info left, social icons right, tech stack note
          ============================================================ -->
     <footer>
-        <!-- footer-inner constrains width and lays out contact left, icons right -->
         <div class="footer-inner">
-
-            <!-- Contact info block -->
             <div class="footer-contact">
                 <p class="footer-name">Fabian Nuno</p>
-                <!-- mailto: link opens the default email client -->
                 <a href="mailto:fnguno@gmail.com" class="footer-email">fnguno@gmail.com</a>
                 <span class="footer-phone">432-385-9785</span>
             </div>
-
-            <!-- Social icon links — same as header but smaller (footer-icon vs header-icon) -->
             <div class="footer-links">
                 <a href="https://www.linkedin.com/in/fabian-nuno" target="_blank" class="icon-link" title="LinkedIn">
                     <img src="images/linkedin.png" alt="LinkedIn" class="footer-icon">
@@ -409,52 +359,33 @@
                 </a>
             </div>
         </div>
-
-        <!-- Tech stack attribution line — good for showing recruiters what this was built with -->
         <p class="footer-note">Built with Azure Static Web Apps · Azure Functions · Cosmos DB · Azure DevOps</p>
-
-    </footer><!-- /footer -->
+    </footer>
 
     <!-- ============================================================
          VISITOR COUNTER SCRIPT
-         ============================================================
-         Calls the Azure Function App (fabian-resume-api) which:
-           1. Reads the current count from Azure Cosmos DB
-           2. Increments it by 1
-           3. Returns the new count as JSON: { "count": 42 }
-
-         The returned count is injected into the span#visitor-count
-         element in the header visitor bar.
-
-         Error handling: if the API is unreachable (cold start, network
-         issue, CORS problem) the counter shows "—" instead of breaking.
-         The error is logged to the browser console for debugging.
-
-         window.onload ensures the DOM is fully ready before the fetch
-         runs so the #visitor-count element is guaranteed to exist.
+         Calls fabian-resume-api Azure Function which:
+           1. Reads current count from Cosmos DB
+           2. Increments by 1
+           3. Returns JSON: { "count": 42 }
+         Shows "—" if the API is unreachable for any reason.
+         window.onload ensures the DOM is ready before the fetch runs.
          ============================================================ -->
     <script>
         async function updateVisitorCount() {
             try {
-                // Call the Azure Function HTTP trigger — this increments and returns the count
+                // Call the Azure Function HTTP trigger
                 const response = await fetch("https://fabian-resume-api.azurewebsites.net/api/GetResumeCounter");
-
-                // Parse the JSON response body — expected shape: { "count": <number> }
                 const data = await response.json();
-
-                // Inject the count into the visitor counter span in the header
+                // Inject the live count into the visitor bar span
                 document.getElementById("visitor-count").textContent = data.count;
-
             } catch (error) {
-                // If the API call fails for any reason, show a dash instead of broken text
+                // Show a dash instead of breaking if the API is unreachable
                 document.getElementById("visitor-count").textContent = "—";
-
-                // Log the full error to the browser console for debugging
                 console.error("Failed to fetch visitor count:", error);
             }
         }
-
-        // Run the counter function as soon as the page finishes loading
+        // Run after the DOM is fully loaded
         window.onload = updateVisitorCount;
     </script>
 
