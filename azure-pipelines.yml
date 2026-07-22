@@ -35,6 +35,13 @@
 # for all HTML, CSS, JS, YAML, and MD files. This prevents git's
 # automatic CRLF conversion on Windows from corrupting files
 # during checkout. Never remove .gitattributes from this repo.
+#
+# DEPLOY TASK FIX (v2):
+# Added production_branch: 'main' to the AzureStaticWebApp@0 task.
+# This explicitly tells the task which Static Web App environment
+# to target, resolving the "No matching Static Web App was found"
+# error that occurs when the task cannot identify the correct
+# deployment environment from the token alone.
 # ============================================================
 
 # ---------------------------------------------------------------
@@ -251,24 +258,33 @@ stages:
           # AzureStaticWebApp@0 is the official Microsoft task
           # that handles the upload to Azure Static Web Apps.
           #
-          # app_location: the folder containing index.html and style.css
-          # output_location: leave empty — no build step needed (pure HTML/CSS)
-          # skip_api_build: true — the Azure Function backend is managed
-          #   separately (fabian-resume-api) so we skip API build here
+          # app_location:    folder containing index.html, style.css, images/
+          # output_location: empty — no build step needed for pure HTML/CSS
+          # skip_api_build:  true — Function App (fabian-resume-api) is
+          #                  deployed separately, skip it here
+          # production_branch: tells the task this targets the production
+          #                  environment on the main branch — this is the
+          #                  key fix that resolves "No matching Static Web App
+          #                  was found" by giving the task explicit context
+          #                  about which environment to deploy to.
           #
-          # The deployment token comes from the variable group secret.
-          # It authenticates this agent to the fabian-resume-site resource
-          # in Azure without storing credentials anywhere in the code.
+          # The token is passed via env: using the exact lowercase variable
+          # name the AzureStaticWebApp@0 task expects. Casing matters —
+          # azure_static_web_apps_api_token must be all lowercase.
+          # It is injected at runtime from the cloud-resume-secrets variable
+          # group and never appears in logs or code.
           # -------------------------------------------------------
           - task: AzureStaticWebApp@0
             displayName: 'Deploy to Azure Static Web Apps (fabian-resume-site)'
             inputs:
-              app_location: '$(frontendPath)'   # frontend/ folder
+              app_location: '$(frontendPath)'   # frontend/ — source files to deploy
               output_location: ''               # No build output — deploy as-is
-              skip_api_build: true              # API (Function App) is managed separately
+              skip_api_build: true              # Skip API — Function App managed separately
+              production_branch: 'main'         # Explicitly target production environment on main
             env:
-              # Secret injected at runtime from the cloud-resume-secrets variable group
-              # Never hardcode this token — it grants write access to the production site
+              # Token sourced from cloud-resume-secrets variable group (Pipelines → Library)
+              # Grants pipeline agent write access to fabian-resume-site
+              # Variable name must be exactly: azure_static_web_apps_api_token (all lowercase)
               azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN)
 
           # -------------------------------------------------------
