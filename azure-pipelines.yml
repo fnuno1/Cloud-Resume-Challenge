@@ -43,36 +43,23 @@
 # The AzureStaticWebApp@0 Microsoft task was our original deploy
 # method. It failed with "No matching Static Web App was found"
 # because Azure Static Web Apps requires a repository linkage
-# (GitHub or Azure DevOps) when using that task. The task cannot
-# deploy to a Static Web App that has no registered source repo.
-#
-# We disconnected the GitHub source using:
-#   az staticwebapp disconnect --name fabian-resume-site \
-#     --resource-group cloud-resume-challenge
-#
-# After disconnecting, the AzureStaticWebApp@0 task continued to
-# fail because Azure Static Web Apps enforces repo linkage at the
-# platform level when using that task — even with a valid token.
+# (GitHub or Azure DevOps) when using that task.
 #
 # SOLUTION: Azure Static Web Apps CLI (swa deploy)
 # The SWA CLI authenticates purely via deployment token with no
 # repository linkage required. This gives us full control over
 # the deployment pipeline without Azure managing it for us.
-# This is the professional approach for custom CI/CD pipelines.
 #
-# The original AzureStaticWebApp@0 task is preserved below as a
-# commented-out reference so the architectural decision is clear.
-#
-# --env DEFAULT vs --env PRODUCTION:
+# --env FLAG HISTORY:
 # ---------------------------------------------------------------
-# After switching to swa CLI we still hit "No matching Static Web
-# App was found". Root cause discovered via:
-#   az staticwebapp environment list --name fabian-resume-site
-# The command returned Name: "default" — not "production".
-# Azure names the production slot "default" when the Static Web
-# App is not linked to a source repo. Using --env production
-# failed because that environment name does not exist.
-# Fix: use --env default which maps to the actual production slot.
+# Attempt 1: --env production → failed, environment doesn't exist
+# Attempt 2: --env default   → failed on fresh SWA with status
+#                              "WaitingForDeployment" — Azure
+#                              rejects "default" as invalid before
+#                              the first deployment completes.
+# Fix: omit --env entirely on first deploy. The SWA CLI will
+#      auto-detect the environment from the deployment token.
+#      After first successful deploy, re-evaluate if --env is needed.
 # ============================================================
 
 # ---------------------------------------------------------------
@@ -253,10 +240,8 @@ stages:
 
     # Links this deployment to the "production" environment in
     # Azure DevOps — where the manual approval gate is configured.
-    # NOTE: "production" here is the Azure DevOps environment name.
-    # The Static Web App environment name is "default" — these are
-    # two separate concepts. Azure DevOps environment = approval gate.
-    # Static Web App environment = deployment slot.
+    # NOTE: "production" is the Azure DevOps environment name (approval gate).
+    # This is separate from the Static Web App environment name.
     environment: 'production'
 
     strategy:
@@ -270,23 +255,9 @@ stages:
 
           # -------------------------------------------------------
           # ORIGINAL DEPLOY METHOD — AzureStaticWebApp@0 task
-          # KEPT AS REFERENCE — DO NOT UNCOMMENT WITHOUT READING BELOW
+          # KEPT AS REFERENCE — DO NOT UNCOMMENT
+          # Failed because Azure enforces repo linkage for this task.
           # -------------------------------------------------------
-          # The AzureStaticWebApp@0 task was our original approach.
-          # It failed consistently with:
-          #   "No matching Static Web App was found or the api key was invalid"
-          #
-          # ROOT CAUSE: Azure Static Web Apps enforces repository linkage
-          # when using this task. The Static Web App must be actively linked
-          # to a GitHub or Azure DevOps repo for the task to authenticate.
-          # After disconnecting GitHub via az staticwebapp disconnect, the
-          # task had no registered repo to match against — causing the error
-          # regardless of whether the token itself was valid.
-          #
-          # This is an Azure platform constraint, not a YAML or token issue.
-          # The task is designed for managed pipelines where Azure controls
-          # the repo connection. For custom pipelines, use swa CLI instead.
-          #
           # - task: AzureStaticWebApp@0
           #   displayName: 'Deploy to Azure Static Web Apps (fabian-resume-site)'
           #   inputs:
@@ -301,57 +272,39 @@ stages:
           # -------------------------------------------------------
           # CURRENT DEPLOY METHOD — Azure Static Web Apps CLI (swa)
           # -------------------------------------------------------
-          # The SWA CLI is the official Azure Static Web Apps command
-          # line tool. Unlike the AzureStaticWebApp@0 task, it
-          # authenticates purely via deployment token with no repository
-          # linkage required — giving us full control over deployment
-          # without Azure managing the pipeline for us.
+          # The SWA CLI authenticates via deployment token only —
+          # no repository linkage required.
           #
-          # HOW IT WORKS:
-          # 1. npm installs the SWA CLI globally on the agent
-          # 2. swa deploy points at the frontend/ folder
-          # 3. The deployment token from the variable group authenticates
-          #    the agent to fabian-resume-site
-          # 4. Files are uploaded directly to Azure Static Web Apps
-          #
-          # IMPORTANT — --env default vs --env production:
-          # The Static Web App environment is named "default" not "production"
-          # Confirmed via: az staticwebapp environment list
-          # The production slot is called "default" when the Static Web App
-          # has no source repo linked. Using --env production caused the same
-          # "No matching Static Web App" error because that name doesn't exist.
+          # NOTE on --env flag:
+          # We deliberately omit --env on this fresh Static Web App.
+          # The environment status is "WaitingForDeployment" which
+          # means Azure has not yet assigned a valid environment name.
+          # Passing --env default causes: "The environment name
+          # 'default' is invalid. Please choose another value."
+          # Omitting --env lets the CLI auto-detect from the token.
+          # After first successful deployment, re-evaluate if needed.
           # -------------------------------------------------------
 
-          # Step 1: Install the Azure Static Web Apps CLI
-          # @latest ensures we always use the current stable version
-          # The CLI is published as an npm package by Microsoft
+          # Step 1: Install the Azure Static Web Apps CLI globally
           - script: |
               echo "=== Installing Azure Static Web Apps CLI ==="
               npm install -g @azure/static-web-apps-cli@latest
               echo "✓ SWA CLI installed"
-              swa --version   # Print version to log for audit trail
+              swa --version   # Print version to pipeline log for audit trail
             displayName: 'Install SWA CLI'
 
           # Step 2: Deploy frontend/ to fabian-resume-site
-          # --app-location: the folder to deploy (frontend/)
-          # --env default: the actual name of the production slot on
-          #   this Static Web App — confirmed via environment list command.
-          #   Do NOT change this to "production" — that environment does
-          #   not exist and will cause a BadRequest error.
-          # --deployment-token: injected from the variable group secret.
-          #   Never hardcode this token — it grants write access to the site.
+          # --env flag intentionally omitted — see note above
+          # --deployment-token injected from cloud-resume-secrets variable group
+          # Never hardcode the token — it grants write access to the live site
           - script: |
               echo "=== Deploying to Azure Static Web Apps ==="
               swa deploy $(frontendPath) \
-                --env default \
                 --deployment-token $(AZURE_STATIC_WEB_APPS_API_TOKEN)
             displayName: 'Deploy via SWA CLI'
 
           # -------------------------------------------------------
-          # SUMMARY STEP
-          # Prints deployment details to the log for audit trail.
-          # Runs after successful deployment — shows exactly what
-          # build number and commit SHA went to production.
+          # SUMMARY — prints audit trail to pipeline log
           # -------------------------------------------------------
           - script: |
               echo "============================================"
