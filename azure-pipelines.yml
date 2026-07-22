@@ -50,16 +50,26 @@
 # repository linkage required. This gives us full control over
 # the deployment pipeline without Azure managing it for us.
 #
-# --env FLAG HISTORY:
+# --env FLAG HISTORY — important context:
 # ---------------------------------------------------------------
-# Attempt 1: --env production → failed, environment doesn't exist
-# Attempt 2: --env default   → failed on fresh SWA with status
-#                              "WaitingForDeployment" — Azure
-#                              rejects "default" as invalid before
-#                              the first deployment completes.
-# Fix: omit --env entirely on first deploy. The SWA CLI will
-#      auto-detect the environment from the deployment token.
-#      After first successful deploy, re-evaluate if --env is needed.
+# Attempt 1: --env production
+#   Failed — environment didn't exist on the old disconnected SWA.
+#
+# Attempt 2: --env default
+#   Failed — Azure CLI confirmed environment was named "default"
+#   but SWA rejected it as invalid on a fresh "WaitingForDeployment"
+#   Static Web App before any deployment had completed.
+#
+# Attempt 3: omit --env entirely
+#   Pipeline went green but deployed to a "preview" slot instead
+#   of the production environment. fabianresume.dev still showed
+#   "can't reach this page" because production was untouched.
+#
+# Fix: --env production
+#   The Azure Portal Environments blade shows the production slot
+#   is literally labeled "Production" — not "default". The SWA CLI
+#   environment name maps to "production" (lowercase) for the
+#   production slot. This is the correct value to use.
 # ============================================================
 
 # ---------------------------------------------------------------
@@ -240,8 +250,10 @@ stages:
 
     # Links this deployment to the "production" environment in
     # Azure DevOps — where the manual approval gate is configured.
-    # NOTE: "production" is the Azure DevOps environment name (approval gate).
-    # This is separate from the Static Web App environment name.
+    # NOTE: "production" here is the Azure DevOps environment name.
+    # The Static Web App environment name is also "production" —
+    # confirmed via the Azure Portal Environments blade which shows
+    # the production slot labeled "Production" (not "default").
     environment: 'production'
 
     strategy:
@@ -275,14 +287,17 @@ stages:
           # The SWA CLI authenticates via deployment token only —
           # no repository linkage required.
           #
-          # NOTE on --env flag:
-          # We deliberately omit --env on this fresh Static Web App.
-          # The environment status is "WaitingForDeployment" which
-          # means Azure has not yet assigned a valid environment name.
-          # Passing --env default causes: "The environment name
-          # 'default' is invalid. Please choose another value."
-          # Omitting --env lets the CLI auto-detect from the token.
-          # After first successful deployment, re-evaluate if needed.
+          # --env production: targets the production slot of the
+          #   Static Web App. The Azure Portal Environments blade
+          #   confirms this slot is labeled "Production". The SWA CLI
+          #   accepts "production" (lowercase) to target it.
+          #   See --env FLAG HISTORY in the header comments above
+          #   for the full troubleshooting journey that led here.
+          #
+          # --deployment-token: injected at runtime from the
+          #   cloud-resume-secrets variable group in Pipelines → Library.
+          #   Never hardcode this token — it grants write access to
+          #   the live production site at fabianresume.dev.
           # -------------------------------------------------------
 
           # Step 1: Install the Azure Static Web Apps CLI globally
@@ -293,13 +308,13 @@ stages:
               swa --version   # Print version to pipeline log for audit trail
             displayName: 'Install SWA CLI'
 
-          # Step 2: Deploy frontend/ to fabian-resume-site
-          # --env flag intentionally omitted — see note above
-          # --deployment-token injected from cloud-resume-secrets variable group
-          # Never hardcode the token — it grants write access to the live site
+          # Step 2: Deploy frontend/ to the production environment
+          # --env production targets the production slot (not preview)
+          # --deployment-token comes from the variable group secret
           - script: |
               echo "=== Deploying to Azure Static Web Apps ==="
               swa deploy $(frontendPath) \
+                --env production \
                 --deployment-token $(AZURE_STATIC_WEB_APPS_API_TOKEN)
             displayName: 'Deploy via SWA CLI'
 
