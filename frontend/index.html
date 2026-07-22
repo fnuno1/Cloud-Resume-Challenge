@@ -8,8 +8,7 @@
      Backend:    Azure Function App (fabian-resume-api)
                  → GetResumeCounter → Azure Cosmos DB
      Fonts:      Inter (body) + JetBrains Mono (labels/meta)
-                 loaded from Google Fonts CDN
-     Last updated: July 2026 — Option 3 cert layout
+     Last updated: July 2026 — full content sync with PDF resume
      ============================================================ -->
 <html lang="en">
 <head>
@@ -17,14 +16,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fabian Nuno — DevOps Engineer</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts: Inter (body) + JetBrains Mono (labels/meta/counter) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
     <!-- ============================================================
-         HEADER — name, cert title line, social icons, visitor counter
+         HEADER
          ============================================================ -->
     <header>
         <div class="header-inner">
@@ -52,24 +50,27 @@
 
         <!-- --------------------------------------------------------
              SUMMARY
+             Adapted from PDF resume for web scanning — punchy and
+             specific, leads with CI/CD and cert credentials.
              -------------------------------------------------------- -->
         <section class="section" id="summary">
             <h2 class="section-title">Summary</h2>
             <p class="summary-text">
-                Certified DevOps Engineer (AZ-400) with a background in building production infrastructure from the ground up.
-                Specializes in CI/CD automation, hybrid identity, and secure cloud architecture on Azure.
-                Proven ability to reduce manual process time, enforce compliance at scale, and bridge security and engineering teams.
-                Holds nine certifications and a B.S. in Cloud Computing from WGU.
+                Azure Administrator moving into DevOps engineering with production CI/CD experience in both Azure DevOps and GitHub Actions.
+                Built and operates pipelines with automated linting, approval gates, secrets management, and rollback validation.
+                AZ-400 (DevOps Engineer Expert), AZ-204, and AZ-104 certified.
             </p>
         </section>
 
         <!-- --------------------------------------------------------
              EXPERIENCE
+             Bullets adapted from PDF resume for web scannability.
+             Most recent role first. Dates match PDF resume exactly.
              -------------------------------------------------------- -->
         <section class="section" id="experience">
             <h2 class="section-title">Experience</h2>
 
-            <!-- JOB 1: Azure Administrator — Total Site Solutions (current) -->
+            <!-- JOB 1: Azure Administrator — Total Site Solutions -->
             <div class="job">
                 <div class="job-header">
                     <div>
@@ -82,11 +83,20 @@
                     </div>
                 </div>
                 <ul class="job-list">
-                    <li>Architected hybrid identity environment integrating on-premises Active Directory with Entra ID as the organization scaled from 75 to nearly 400 employees.</li>
-                    <li>Built a 5-stage CI/CD pipeline in Azure DevOps with PSScriptAnalyzer linting, 33 Pester tests, and gated approvals — automating IT onboarding and cutting provisioning time from 30-60 minutes to under 5 minutes.</li>
-                    <li>Deployed Zero Trust security posture including 22+ Conditional Access policies, Intune MDM across 232+ devices, Microsoft Defender for Endpoint, and Privileged Identity Management.</li>
-                    <li>Raised Microsoft Secure Score from the low 40s to 71.65% through systematic control implementation and compliance hardening.</li>
-                    <li>Hired and trained 4 helpdesk employees, establishing IT support processes and documentation as the organization scaled.</li>
+                    <!-- CI/CD Pipeline — headline achievement -->
+                    <li>Designed and operate a 5-stage Azure DevOps pipeline — PSScriptAnalyzer lint on every PR (errors block merge), deploy stage gated behind manual approval, running on a self-hosted agent on the domain controller.</li>
+                    <!-- CRLF corruption troubleshooting -->
+                    <li>Diagnosed a recurring post-merge failure where Git CRLF conversion corrupted Unicode characters and broke production deploys — root-caused four distinct corruption patterns and built an automated detection-and-repair script, eliminating the recurring outage.</li>
+                    <!-- Release and change management -->
+                    <li>Enforced branch protection on main requiring PR review, linked work items, and passing builds; every deploy creates timestamped backups with post-deploy verification, enabling validated rollbacks via git revert or direct restore.</li>
+                    <!-- Secrets and service auth -->
+                    <li>Implemented service principal auth for Microsoft Graph and certificate-based auth for Exchange Online; all secrets stored as machine-level environment variables and Azure DevOps secret variables — never hardcoded — with documented rotation schedules.</li>
+                    <!-- KQL cost optimization -->
+                    <li>Investigated a 2x month-over-month Log Analytics cost spike using KQL — identified non-interactive sign-in logs as the ingestion driver (27 GB vs 13 GB baseline) and recommended migrating alert rules to native Log Analytics, projecting ~60% cost reduction.</li>
+                    <!-- Automation platform -->
+                    <li>Built and deployed a production PowerShell automation platform for the full employee lifecycle (onboarding, lookup, offboarding) — reduced a 30–60 minute manual process to under 5 minutes for 200+ users.</li>
+                    <!-- Hybrid AD + security posture -->
+                    <li>Administers hybrid AD + Entra ID for 200+ users — Conditional Access, MFA, identity lifecycle; raised Microsoft Secure Score from the low 40s to 71.65% through targeted hardening. Manages Intune and Defender for Endpoint across 200+ Windows 11 endpoints.</li>
                 </ul>
             </div>
 
@@ -103,10 +113,8 @@
                     </div>
                 </div>
                 <ul class="job-list">
-                    <li>Acted as primary IT liaison for C-level executives, ensuring seamless technology support as the sole IT technician for a 75-person organization.</li>
-                    <li>Administered Active Directory, Group Policies, user accounts, permissions, and software licenses across a growing user base.</li>
-                    <li>Executed comprehensive Windows administration across a 200+ device network including imaging, deployment, and lifecycle management.</li>
-                    <li>Developed automated workflows that reduced support ticket resolution time by 30% and established IT documentation standards.</li>
+                    <li>Resolved escalated AD, GPO, and access issues with root-cause fixes; managed 200+ Windows endpoints using PowerShell automation for patching and cleanup.</li>
+                    <li>Documented repeatable procedures that improved team troubleshooting speed and reduced repeat tickets.</li>
                 </ul>
             </div>
 
@@ -119,13 +127,12 @@
                     </div>
                     <div class="job-meta">
                         <span class="job-location">United States</span>
-                        <span class="job-date">Mar 2022 – Sep 2022</span>
+                        <span class="job-date">Mar 2021 – Sep 2022</span>
                     </div>
                 </div>
                 <ul class="job-list">
-                    <li>Delivered Level 1 and 2 support for on-site and remote clients, ensuring swift issue resolution.</li>
-                    <li>Managed end-user support for 100+ accounts through Active Directory.</li>
-                    <li>Created comprehensive help desk documentation with step-by-step instructions.</li>
+                    <li>Delivered same-day resolution on OS, application, and network issues for 100+ users.</li>
+                    <li>Authored documentation that improved first-call resolution rates across the support team.</li>
                 </ul>
             </div>
 
@@ -138,13 +145,12 @@
                     </div>
                     <div class="job-meta">
                         <span class="job-location">Austin, TX</span>
-                        <span class="job-date">Oct 2021 – Mar 2022</span>
+                        <span class="job-date">Oct 2020 – Mar 2021</span>
                     </div>
                 </div>
                 <ul class="job-list">
-                    <li>Provided Tier 1 IT support to non-technical internal users, resolving issues efficiently.</li>
-                    <li>Developed automated workflows in ServiceNow, boosting resolution efficiency by 30%.</li>
-                    <li>Trained new hires on IT support best practices and ServiceNow usage.</li>
+                    <li>Maintained SLA compliance across 500+ store locations while processing 40–60 tickets daily.</li>
+                    <li>Created troubleshooting guides that reduced escalations and improved team resolution speed.</li>
                 </ul>
             </div>
 
@@ -157,15 +163,177 @@
                     </div>
                     <div class="job-meta">
                         <span class="job-location">Austin, TX</span>
-                        <span class="job-date">May 2021 – Oct 2021</span>
+                        <span class="job-date">Oct 2019 – Oct 2020</span>
                     </div>
                 </div>
                 <ul class="job-list">
-                    <li>Resolved technical issues with Outlook, mail, and distribution groups — averaging 20 tickets daily.</li>
-                    <li>Documented all transactions and support interactions in ServiceNow.</li>
+                    <li>Resolved ServiceNow tickets for Outlook, authentication, and AD issues — completed 100+ weekly AD tasks.</li>
+                    <li>Expanded the internal knowledge base, reducing repeat escalations.</li>
                 </ul>
             </div>
 
+        </section>
+
+        <!-- --------------------------------------------------------
+             PROJECTS
+             Two projects matching the PDF resume exactly.
+             Each card has name, link, and adapted bullets.
+             -------------------------------------------------------- -->
+        <section class="section" id="projects">
+            <h2 class="section-title">Projects</h2>
+
+            <!-- PROJECT 1: TSS IT Automation -->
+            <div class="job">
+                <div class="job-header">
+                    <div>
+                        <h3 class="job-title">IT Onboarding &amp; Offboarding Automation</h3>
+                        <!-- Company + GitHub link on same line -->
+                        <p class="job-company">
+                            Total Site Solutions (production) &nbsp;·&nbsp;
+                            <a href="https://github.com/fnuno1/Onboarding-Offboarding-Automation" target="_blank" class="project-link">github.com/fnuno1/Onboarding-Offboarding-Automation</a>
+                        </p>
+                    </div>
+                </div>
+                <ul class="job-list">
+                    <li>Reduced employee onboarding from 30–60 minutes to under 5 minutes for 200+ users via end-to-end PowerShell automation with Azure DevOps CI/CD — lint validation, branch policies, approval gates, and backup-and-verify deploys.</li>
+                    <li>Published sanitized public repo with full pipeline definition, runbook, PR template, and five annotated PowerShell tools demonstrating secrets handling, service principal auth, and audit monitoring patterns.</li>
+                </ul>
+            </div>
+
+            <!-- PROJECT 2: Cloud Resume Challenge -->
+            <div class="job">
+                <div class="job-header">
+                    <div>
+                        <h3 class="job-title">Cloud Resume Challenge</h3>
+                        <p class="job-company">
+                            <a href="https://fabianresume.dev" target="_blank" class="project-link">fabianresume.dev</a>
+                        </p>
+                    </div>
+                </div>
+                <ul class="job-list">
+                    <li>Azure Static Web Apps + Azure Functions (Python) + Cosmos DB — live visitor counter backed by serverless API, custom domain with SSL, and full CI/CD pipeline via Azure DevOps with multi-stage validation and manual approval gates.</li>
+                    <li>Migrated from GitHub Actions to Azure DevOps for full pipeline control — Validate stage runs on every PR, Deploy stage requires manual approval, all secrets managed through variable groups.</li>
+                </ul>
+            </div>
+
+        </section>
+
+        <!-- --------------------------------------------------------
+             SKILLS
+             Eight categories from PDF resume adapted for web.
+             Tag pills inside each category row.
+             -------------------------------------------------------- -->
+        <section class="section" id="skills">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills-grid">
+
+                <!-- CI/CD & DevOps -->
+                <div class="skill-row">
+                    <span class="skill-category">CI/CD &amp; DevOps</span>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Azure DevOps</span>
+                        <span class="skill-tag">GitHub Actions</span>
+                        <span class="skill-tag">PSScriptAnalyzer</span>
+                        <span class="skill-tag">Branch Policies</span>
+                        <span class="skill-tag">Approval Gates</span>
+                        <span class="skill-tag">Self-hosted Agents</span>
+                        <span class="skill-tag">Rollback Validation</span>
+                    </div>
+                </div>
+
+                <!-- Secrets & Auth -->
+                <div class="skill-row">
+                    <span class="skill-category">Secrets &amp; Auth</span>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Service Principals</span>
+                        <span class="skill-tag">Certificate Auth</span>
+                        <span class="skill-tag">Microsoft Graph API</span>
+                        <span class="skill-tag">Exchange Online Auth</span>
+                        <span class="skill-tag">Secret Rotation</span>
+                    </div>
+                </div>
+
+                <!-- Observability -->
+                <div class="skill-row">
+                    <span class="skill-category">Observability</span>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Log Analytics</span>
+                        <span class="skill-tag">KQL</span>
+                        <span class="skill-tag">Microsoft Sentinel</span>
+                        <span class="skill-tag">Alert Rules</span>
+                        <span class="skill-tag">Audit Logging</span>
+                        <span class="skill-tag">Cost Optimization</span>
+                    </div>
+                </div>
+
+                <!-- Scripting -->
+                <div class="skill-row">
+                    <span class="skill-category">Scripting</span>
+                    <div class="skill-tags">
+                        <span class="skill-tag">PowerShell</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">Bash</span>
+                        <span class="skill-tag">Windows Forms</span>
+                        <span class="skill-tag">Task Automation</span>
+                    </div>
+                </div>
+
+                <!-- IaC -->
+                <div class="skill-row">
+                    <span class="skill-category">IaC</span>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Terraform</span>
+                        <span class="skill-tag">ARM Templates</span>
+                        <span class="skill-tag">ACR</span>
+                        <span class="skill-tag">ACI</span>
+                        <span class="skill-tag">AKS</span>
+                    </div>
+                </div>
+
+                <!-- Cloud & Identity -->
+                <div class="skill-row">
+                    <span class="skill-category">Cloud &amp; Identity</span>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Entra ID</span>
+                        <span class="skill-tag">Conditional Access</span>
+                        <span class="skill-tag">MFA</span>
+                        <span class="skill-tag">Hybrid AD</span>
+                        <span class="skill-tag">RBAC</span>
+                        <span class="skill-tag">Intune</span>
+                        <span class="skill-tag">Defender for Endpoint</span>
+                        <span class="skill-tag">Azure Static Web Apps</span>
+                        <span class="skill-tag">Azure Functions</span>
+                        <span class="skill-tag">Cosmos DB</span>
+                    </div>
+                </div>
+
+                <!-- OS & Networking -->
+                <div class="skill-row">
+                    <span class="skill-category">OS &amp; Networking</span>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Windows Server</span>
+                        <span class="skill-tag">AD DS</span>
+                        <span class="skill-tag">GPO</span>
+                        <span class="skill-tag">DNS</span>
+                        <span class="skill-tag">DHCP</span>
+                        <span class="skill-tag">TCP/IP</span>
+                        <span class="skill-tag">Linux</span>
+                    </div>
+                </div>
+
+                <!-- Documentation -->
+                <div class="skill-row">
+                    <span class="skill-category">Documentation</span>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Runbooks</span>
+                        <span class="skill-tag">SOPs</span>
+                        <span class="skill-tag">Architecture Docs</span>
+                        <span class="skill-tag">PR Templates</span>
+                        <span class="skill-tag">Troubleshooting Guides</span>
+                    </div>
+                </div>
+
+            </div>
         </section>
 
         <!-- --------------------------------------------------------
@@ -186,32 +354,27 @@
         </section>
 
         <!-- --------------------------------------------------------
-             CERTIFICATIONS — Option 3 layout (July 2026)
-             --------------------------------------------------------
-             AZURE CERTS (top): Full-width featured rows with 48px logos.
-             These are the headline credentials — given premium treatment.
-             class="cert-item featured" — blue tint + azure border.
-             class="cert-logo-lg" — 48px instead of default 36px.
+             CERTIFICATIONS
+             Two-column grid, 5 rows of 2.
+             Priority order: Azure certs first (left column top),
+             then CompTIA by relevance, ITIL last.
 
-             COMPTIA / LPI (bottom): Compact two-column grid.
-             class="cert-grid-compact" — two-column CSS grid.
-             class="cert-item-sm" — smaller padding, 28px logos.
-             ITIL uses class="no-link" — no Credly URL available.
+             Left column:  AZ-400, AZ-104, Network+, A+,     LPI
+             Right column: AZ-204, Sec+,   Cloud+,  Project+, ITIL
 
              IMAGE FILENAMES:
-             AZ-400.png and AZ-204.png saved with dashes.
-             AZ104.png and all CompTIA/LPI use original filenames.
+             AZ-400.png and AZ-204.png use dashes.
+             AZ104.png and CompTIA/LPI use original filenames.
              -------------------------------------------------------- -->
         <section class="section" id="certifications">
             <h2 class="section-title">Certifications</h2>
+            <div class="cert-grid-two-col">
 
-            <!-- AZURE CERTS — full-width featured rows, 48px logos -->
-            <div class="cert-grid">
-
-                <!-- AZ-400: Azure DevOps Engineer Expert — URL verified July 2026 -->
+                <!-- Row 1 -->
+                <!-- AZ-400: Azure DevOps Engineer Expert -->
                 <div class="cert-item featured">
                     <a href="https://learn.microsoft.com/api/credentials/share/en-us/FabianNuno-4629/28AC06E23317E732?sharingId=E3A19F62801E95A5" target="_blank" class="cert-link">
-                        <img src="images/AZ-400.png" alt="AZ-400" class="cert-logo cert-logo-lg">
+                        <img src="images/AZ-400.png" alt="AZ-400" class="cert-logo">
                         <div class="cert-info">
                             <span class="cert-name">Azure DevOps Engineer Expert</span>
                             <span class="cert-meta">AZ-400 &nbsp;·&nbsp; 2026</span>
@@ -220,10 +383,10 @@
                     </a>
                 </div>
 
-                <!-- AZ-204: Azure Developer Associate — URL verified July 2026 -->
+                <!-- AZ-204: Azure Developer Associate -->
                 <div class="cert-item featured">
                     <a href="https://learn.microsoft.com/api/credentials/share/en-us/FabianNuno-4629/830A193D5DCE3793?sharingId=E3A19F62801E95A5" target="_blank" class="cert-link">
-                        <img src="images/AZ-204.png" alt="AZ-204" class="cert-logo cert-logo-lg">
+                        <img src="images/AZ-204.png" alt="AZ-204" class="cert-logo">
                         <div class="cert-info">
                             <span class="cert-name">Azure Developer Associate</span>
                             <span class="cert-meta">AZ-204 &nbsp;·&nbsp; 2025</span>
@@ -232,10 +395,11 @@
                     </a>
                 </div>
 
-                <!-- AZ-104: Azure Administrator Associate — URL verified July 2026 -->
+                <!-- Row 2 -->
+                <!-- AZ-104: Azure Administrator Associate -->
                 <div class="cert-item featured">
                     <a href="https://learn.microsoft.com/api/credentials/share/en-us/FabianNuno-4629/BFD78BCEE36269B4?sharingId=E3A19F62801E95A5" target="_blank" class="cert-link">
-                        <img src="images/AZ104.png" alt="AZ-104" class="cert-logo cert-logo-lg">
+                        <img src="images/AZ104.png" alt="AZ-104" class="cert-logo">
                         <div class="cert-info">
                             <span class="cert-name">Azure Administrator Associate</span>
                             <span class="cert-meta">AZ-104 &nbsp;·&nbsp; 2023</span>
@@ -244,29 +408,25 @@
                     </a>
                 </div>
 
-            </div><!-- /Azure cert grid -->
-
-            <!-- COMPTIA + LPI — compact two-column grid -->
-            <div class="cert-grid-compact">
-
                 <!-- CompTIA Security+ -->
-                <div class="cert-item-sm">
+                <div class="cert-item">
                     <a href="https://www.credly.com/badges/d8f9c0c1-e6dd-40fc-9d77-b84af9473cb3" target="_blank" class="cert-link">
-                        <img src="images/Security+.png" alt="Security+" class="cert-logo-sm">
+                        <img src="images/Security+.png" alt="Security+" class="cert-logo">
                         <div class="cert-info">
-                            <span class="cert-name-sm">CompTIA Security+</span>
+                            <span class="cert-name">CompTIA Security+</span>
                             <span class="cert-meta">2023</span>
                         </div>
                         <span class="cert-badge">View</span>
                     </a>
                 </div>
 
+                <!-- Row 3 -->
                 <!-- CompTIA Network+ -->
-                <div class="cert-item-sm">
+                <div class="cert-item">
                     <a href="https://www.credly.com/badges/8b12e8a9-49fa-404a-8085-c49ace785b63" target="_blank" class="cert-link">
-                        <img src="images/Network+.png" alt="Network+" class="cert-logo-sm">
+                        <img src="images/Network+.png" alt="Network+" class="cert-logo">
                         <div class="cert-info">
-                            <span class="cert-name-sm">CompTIA Network+</span>
+                            <span class="cert-name">CompTIA Network+</span>
                             <span class="cert-meta">2022</span>
                         </div>
                         <span class="cert-badge">View</span>
@@ -274,23 +434,24 @@
                 </div>
 
                 <!-- CompTIA Cloud+ -->
-                <div class="cert-item-sm">
+                <div class="cert-item">
                     <a href="https://www.credly.com/badges/4ade93b0-be03-4826-81e3-8ad1980e5820" target="_blank" class="cert-link">
-                        <img src="images/Cloud+.png" alt="Cloud+" class="cert-logo-sm">
+                        <img src="images/Cloud+.png" alt="Cloud+" class="cert-logo">
                         <div class="cert-info">
-                            <span class="cert-name-sm">CompTIA Cloud+</span>
+                            <span class="cert-name">CompTIA Cloud+</span>
                             <span class="cert-meta">2023</span>
                         </div>
                         <span class="cert-badge">View</span>
                     </a>
                 </div>
 
+                <!-- Row 4 -->
                 <!-- CompTIA A+ -->
-                <div class="cert-item-sm">
+                <div class="cert-item">
                     <a href="https://www.credly.com/badges/e28fb41d-6bf5-4835-88a3-dabef4f7ecce" target="_blank" class="cert-link">
-                        <img src="images/A+.png" alt="A+" class="cert-logo-sm">
+                        <img src="images/A+.png" alt="A+" class="cert-logo">
                         <div class="cert-info">
-                            <span class="cert-name-sm">CompTIA A+</span>
+                            <span class="cert-name">CompTIA A+</span>
                             <span class="cert-meta">2021</span>
                         </div>
                         <span class="cert-badge">View</span>
@@ -298,40 +459,40 @@
                 </div>
 
                 <!-- CompTIA Project+ -->
-                <div class="cert-item-sm">
+                <div class="cert-item">
                     <a href="https://www.credly.com/badges/8fda9933-6ad0-4e5f-a8f9-d40e8970a0d7" target="_blank" class="cert-link">
-                        <img src="images/Project+.png" alt="Project+" class="cert-logo-sm">
+                        <img src="images/Project+.png" alt="Project+" class="cert-logo">
                         <div class="cert-info">
-                            <span class="cert-name-sm">CompTIA Project+</span>
+                            <span class="cert-name">CompTIA Project+</span>
                             <span class="cert-meta">2023</span>
                         </div>
                         <span class="cert-badge">View</span>
                     </a>
                 </div>
 
+                <!-- Row 5 -->
                 <!-- LPI Linux Essentials -->
-                <div class="cert-item-sm">
+                <div class="cert-item">
                     <a href="https://cs.lpi.org/caf/Xamman/certification/verify/LPI000568729/hyxnk9aef7" target="_blank" class="cert-link">
-                        <img src="images/LPI.png" alt="LPI Linux Essentials" class="cert-logo-sm">
+                        <img src="images/LPI.png" alt="LPI Linux Essentials" class="cert-logo">
                         <div class="cert-info">
-                            <span class="cert-name-sm">LPI Linux Essentials</span>
+                            <span class="cert-name">LPI Linux Essentials</span>
                             <span class="cert-meta">2023</span>
                         </div>
                         <span class="cert-badge">View</span>
                     </a>
                 </div>
 
-                <!-- ITIL 4 Foundation — no public Credly link, no-link suppresses hover -->
-                <div class="cert-item-sm no-link">
-                    <img src="images/ITIL4.png" alt="ITIL 4" class="cert-logo-sm">
+                <!-- ITIL 4 Foundation — no Credly link, no-link suppresses hover -->
+                <div class="cert-item no-link">
+                    <img src="images/ITIL4.png" alt="ITIL 4" class="cert-logo">
                     <div class="cert-info">
-                        <span class="cert-name-sm">ITIL® Foundation</span>
+                        <span class="cert-name">ITIL® Foundation</span>
                         <span class="cert-meta">2024</span>
                     </div>
                 </div>
 
-            </div><!-- /CompTIA compact grid -->
-
+            </div>
         </section>
 
     </main>

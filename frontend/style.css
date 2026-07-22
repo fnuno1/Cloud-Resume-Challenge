@@ -4,7 +4,7 @@
    Author:   Fabian Nuno
    Site:     https://fabianresume.dev
    Deployed: Azure Static Web Apps via Azure DevOps pipeline
-   Last updated: July 2026 — Option 3 cert layout
+   Last updated: July 2026 — skills, projects, two-col cert grid
    ============================================================ */
 
 
@@ -124,6 +124,7 @@ h1 {
     flex-shrink: 0;
 }
 
+/* Square bordered icon button */
 .icon-link {
     display: flex;
     align-items: center;
@@ -164,7 +165,7 @@ h1 {
     border-top: 1px solid var(--border);
 }
 
-/* Full azure blue — matches number badge, stands out on dark bg */
+/* Full azure blue — pops on dark background */
 .visitor-label {
     font-family: var(--mono);
     font-size: 0.78rem;
@@ -194,6 +195,7 @@ h1 {
     gap: 24px;
 }
 
+/* Monospace uppercase azure section label with bottom border */
 .section-title {
     font-size: 0.72rem;
     font-family: var(--mono);
@@ -218,7 +220,8 @@ h1 {
 
 
 /* ============================================================
-   EXPERIENCE — JOB CARDS
+   EXPERIENCE & PROJECTS — JOB/PROJECT CARDS
+   Shared card style — projects reuse .job class for consistency
    ============================================================ */
 .job {
     display: flex;
@@ -256,6 +259,23 @@ h1 {
     margin-top: 2px;
 }
 
+/* Project link inside .job-company line */
+.project-link {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--azure);
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(59, 130, 246, 0.4);
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.project-link:hover {
+    color: var(--white);
+    border-color: var(--azure);
+    transform: none;
+    box-shadow: none;
+}
+
 .job-meta {
     display: flex;
     flex-direction: column;
@@ -276,6 +296,7 @@ h1 {
     color: var(--text-muted);
 }
 
+/* Bullet list — › marker via CSS ::before */
 .job-list {
     list-style: none;
     display: flex;
@@ -294,7 +315,7 @@ h1 {
     margin-bottom: 0;
 }
 
-/* Azure › bullet marker injected via CSS */
+/* Azure › bullet marker */
 .job-list li::before {
     content: "›";
     color: var(--azure);
@@ -302,6 +323,61 @@ h1 {
     flex-shrink: 0;
     margin-top: 1px;
     line-height: 1.5;
+}
+
+
+/* ============================================================
+   SKILLS SECTION
+   Eight categories from the PDF resume.
+   Each row: category label on left, pill tags wrapping on right.
+   ============================================================ */
+.skills-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;   /* Gap between category rows */
+}
+
+/* One skill category row — label + tags side by side */
+.skill-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 12px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+/* Category label — monospace, muted, fixed width keeps tags aligned */
+.skill-category {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+    width: 120px;       /* Fixed width so all tag clouds start at same x position */
+    padding-top: 3px;   /* Align visually with first tag pill */
+}
+
+/* Tag container — wraps onto multiple lines as needed */
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex: 1;
+}
+
+/* Individual skill pill tag */
+.skill-tag {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--azure);
+    background: var(--azure-glow);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    padding: 3px 10px;
+    border-radius: 20px;   /* Pill shape */
+    white-space: nowrap;   /* Never break a tag mid-word */
 }
 
 
@@ -332,6 +408,7 @@ h1 {
     color: var(--text-muted);
 }
 
+/* Dashed underline for WGU link */
 .edu-link {
     color: var(--azure);
     text-decoration: none;
@@ -356,28 +433,21 @@ h1 {
 
 
 /* ============================================================
-   CERTIFICATIONS — OPTION 3 LAYOUT
-   ============================================================
-   Azure certs: full-width featured rows (.cert-grid)
-     - 48px logos via .cert-logo-lg
-     - Blue tint + azure border via .featured
-   CompTIA/LPI: compact two-column grid (.cert-grid-compact)
-     - 28px logos via .cert-logo-sm
-     - Smaller padding via .cert-item-sm
-     - Smaller cert name via .cert-name-sm
+   CERTIFICATIONS — TWO-COLUMN GRID
+   10 certs in 5 rows of 2.
+   Priority order: Azure certs first, CompTIA by relevance, ITIL last.
+   Azure certs (.featured) get blue tint + azure border.
+   ITIL (.no-link) has no Credly URL — hover suppressed.
    ============================================================ */
 
-/* ---- Shared cert structure ---- */
-
-/* Full-width single-column stack — used for Azure certs */
-.cert-grid {
-    display: flex;
-    flex-direction: column;
+/* Two equal columns — 10 certs = 5 even rows */
+.cert-grid-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
-    margin-bottom: 8px;  /* Gap between Azure grid and compact grid */
 }
 
-/* Standard cert row — horizontal flex */
+/* Standard cert row */
 .cert-item {
     display: flex;
     align-items: center;
@@ -389,7 +459,7 @@ h1 {
     transition: border-color 0.2s, background 0.2s;
 }
 
-/* Featured Azure cert rows — blue tint + azure border */
+/* Azure cert rows — blue tint + azure border */
 .cert-item.featured {
     background: var(--featured);
     border-color: rgba(59, 130, 246, 0.25);
@@ -400,19 +470,17 @@ h1 {
     background: var(--azure-glow);
 }
 
-/* ITIL — no Credly URL, disable hover */
-.cert-item.no-link,
-.cert-item-sm.no-link {
+/* ITIL — disable hover, not clickable */
+.cert-item.no-link {
     cursor: default;
 }
 
-.cert-item.no-link:hover,
-.cert-item-sm.no-link:hover {
+.cert-item.no-link:hover {
     border-color: var(--border);
     background: var(--surface);
 }
 
-/* Full-width clickable anchor inside cert rows */
+/* Full-width clickable anchor inside each cert row */
 .cert-link {
     display: flex;
     align-items: center;
@@ -427,7 +495,7 @@ h1 {
     box-shadow: none;
 }
 
-/* Default cert logo — 36px (used as fallback) */
+/* Cert logo — 36px square */
 .cert-logo {
     width: 36px;
     height: 36px;
@@ -437,18 +505,7 @@ h1 {
     transition: transform 0.2s;
 }
 
-/* Large cert logo — 48px for Azure featured rows */
-.cert-logo-lg {
-    width: 48px;
-    height: 48px;
-    object-fit: contain;
-    flex-shrink: 0;
-    border-radius: 4px;
-    transition: transform 0.2s;
-}
-
-.cert-item:hover .cert-logo,
-.cert-item:hover .cert-logo-lg {
+.cert-item:hover .cert-logo {
     transform: scale(1.08);
 }
 
@@ -458,23 +515,25 @@ h1 {
     flex-direction: column;
     gap: 2px;
     flex: 1;
+    min-width: 0;   /* Prevents overflow in grid cells */
 }
 
-/* Cert name — white, standard size */
 .cert-name {
-    font-size: 0.92rem;
+    font-size: 0.88rem;   /* Slightly smaller than before to fit two-col */
     font-weight: 500;
     color: var(--white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;  /* Truncate if too long for cell */
 }
 
-/* Cert meta — year + code */
 .cert-meta {
     font-family: var(--mono);
     font-size: 0.72rem;
     color: var(--text-muted);
 }
 
-/* "View" badge — hidden by default, fades in on hover */
+/* "View" badge — hidden, fades in on hover */
 .cert-badge {
     font-family: var(--mono);
     font-size: 0.68rem;
@@ -490,56 +549,8 @@ h1 {
     transition: opacity 0.2s;
 }
 
-.cert-item:hover .cert-badge,
-.cert-item-sm:hover .cert-badge {
+.cert-item:hover .cert-badge {
     opacity: 1;
-}
-
-/* ---- Compact two-column grid — CompTIA / LPI ---- */
-
-/* Two-column CSS grid — 7 certs fit in 4 rows instead of 7 rows */
-.cert-grid-compact {
-    display: grid;
-    grid-template-columns: 1fr 1fr;   /* Two equal columns */
-    gap: 8px;
-}
-
-/* Compact cert item — smaller padding than full-width rows */
-.cert-item-sm {
-    display: flex;
-    align-items: center;
-    gap: 12px;               /* Tighter gap than full-width rows */
-    padding: 10px 14px;      /* Less padding — fits better in half-width */
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    transition: border-color 0.2s, background 0.2s;
-}
-
-.cert-item-sm:hover {
-    border-color: var(--azure);
-    background: var(--azure-glow);
-}
-
-/* Small cert logo — 28px for compact grid */
-.cert-logo-sm {
-    width: 28px;
-    height: 28px;
-    object-fit: contain;
-    flex-shrink: 0;
-    border-radius: 3px;
-    transition: transform 0.2s;
-}
-
-.cert-item-sm:hover .cert-logo-sm {
-    transform: scale(1.08);
-}
-
-/* Compact cert name — slightly smaller than full-width */
-.cert-name-sm {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--white);
 }
 
 
@@ -608,6 +619,7 @@ footer {
     border-radius: 3px;
 }
 
+/* Tech stack note — very dim */
 .footer-note {
     font-family: var(--mono);
     font-size: 0.7rem;
@@ -646,8 +658,10 @@ a:hover {
     .edu-row { flex-direction: column; }
     .footer-inner { flex-direction: column; align-items: flex-start; }
     .footer-contact { align-items: flex-start; }
-    /* Stack compact grid to single column on mobile */
-    .cert-grid-compact { grid-template-columns: 1fr; }
+    /* Certs and skills stack to single column on mobile */
+    .cert-grid-two-col { grid-template-columns: 1fr; }
+    .skill-row { flex-direction: column; gap: 8px; }
+    .skill-category { width: auto; }
 }
 
 
