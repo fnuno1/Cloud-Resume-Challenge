@@ -20,8 +20,8 @@
    --azure        Primary accent — Azure blue (#3b82f6)
    --azure-glow   Semi-transparent azure for hover backgrounds
    --text         Main body text — off-white for dark theme comfort
-   --text-muted   Secondary text — dates, locations, meta info
-   --text-dim     Tertiary text — visitor counter label, footer note
+   --text-muted   Secondary text — dates, locations, cert meta
+   --text-dim     Tertiary text — footer note (very dim)
    --featured     Very faint blue tint for Azure cert rows
 
    TYPOGRAPHY:
@@ -76,7 +76,7 @@
     /* Text colors — three tiers of emphasis */
     --text:        #e2e2e8;    /* Primary text — main body copy */
     --text-muted:  #8888a0;    /* Secondary — dates, locations, cert meta */
-    --text-dim:    #555568;    /* Tertiary — visitor label, footer note */
+    --text-dim:    #555568;    /* Tertiary — footer note (very dim) */
     --white:       #ffffff;    /* Pure white for names and important headings */
 
     /* Featured row tint — used for Azure cert rows in the cert grid */
@@ -238,11 +238,15 @@ h1 {
     border-top: 1px solid var(--border);
 }
 
-/* "LIVE VISITOR COUNT" label — small, dimmed, uppercase monospace */
+/* "LIVE VISITOR COUNT" label
+   Updated July 2026: changed from --text-dim (#555568) to --text-muted
+   (#8888a0) and increased font size from 0.72rem to 0.78rem.
+   The original color was too dark and blended into the header background.
+   Now matches the visual weight of the cert meta text for better legibility. */
 .visitor-label {
     font-family: var(--mono);
-    font-size: 0.72rem;
-    color: var(--text-dim);
+    font-size: 0.78rem;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }
