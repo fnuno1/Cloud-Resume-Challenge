@@ -1,0 +1,26 @@
+# Cloud Resume Challenge — Git Line Ending Configuration
+# Prevents CRLF corruption on Windows checkout for web files
+# Same pattern as TSS-IT-Automation-DevOps
+
+# Force LF for all web files — never let git convert line endings
+*.html        eol=lf
+*.css         eol=lf
+*.js          eol=lf
+*.json        eol=lf
+*.yml         eol=lf
+*.yaml        eol=lf
+*.md          eol=lf
+*.txt         eol=lf
+*.xml         eol=lf
+
+# Binary files — no line ending conversion
+*.png         binary
+*.jpg         binary
+*.jpeg        binary
+*.gif         binary
+*.ico         binary
+*.svg         binary
+*.woff        binary
+*.woff2       binary
+*.ttf         binary
+*.eot         binary
