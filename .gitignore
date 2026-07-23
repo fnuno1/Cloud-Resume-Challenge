@@ -262,3 +262,21 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+# ============================================================
+# Project-specific ignores — Cloud Resume Challenge
+# Added July 2026
+# ============================================================
+
+# Backup files created during manual file operations
+# These are local safety nets and should never be committed
+*.bak
+_backup_cleanup/
+
+# VS Code workspace settings — editor-specific, not project-specific
+.vscode/
+
+# Frontend backup files from design iterations
+frontend/index3.html
+frontend/index3.html.bak
+frontend/style3.css
