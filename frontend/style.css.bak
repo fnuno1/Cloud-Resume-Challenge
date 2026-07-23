@@ -1,0 +1,631 @@
+/* ============================================================
+   Cloud Resume Challenge — Stylesheet
+   ============================================================
+   Author:   Fabian Nuno
+   Site:     https://fabianresume.dev
+   Deployed: Azure Static Web Apps via Azure DevOps pipeline
+
+   DESIGN SYSTEM:
+   This stylesheet uses CSS custom properties (variables) defined
+   in :root to create a consistent design token system. Every
+   color, font, spacing value, and radius is defined once at the
+   top and referenced throughout. To retheme the site, only the
+   :root block needs to change.
+
+   COLOR PALETTE:
+   --bg           Very dark background (almost black)
+   --surface      Slightly lighter card/section backgrounds
+   --surface-2    Used for icon button backgrounds
+   --border       Subtle border color for cards and dividers
+   --azure        Primary accent — Azure blue (#3b82f6)
+   --azure-glow   Semi-transparent azure for hover backgrounds
+   --text         Main body text — off-white for dark theme comfort
+   --text-muted   Secondary text — dates, locations, cert meta
+   --text-dim     Tertiary text — footer note (very dim)
+   --featured     Very faint blue tint for Azure cert rows
+
+   TYPOGRAPHY:
+   Inter          — Google Font, used for all body/heading text
+                    Multiple weights loaded: 300 400 500 600 700
+   JetBrains Mono — Google Font, used for labels, dates, cert meta,
+                    visitor counter, section titles, and footer note
+                    Gives the site a DevOps/engineering personality
+
+   LAYOUT:
+   max-width 860px centered — comfortable reading width on desktop
+   Fully responsive down to mobile at 600px breakpoint
+   Respects prefers-reduced-motion for accessibility
+   ============================================================ */
+
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+    --bg:          #0d0d0f;
+    --surface:     #161619;
+    --surface-2:   #1e1e24;
+    --border:      #2a2a33;
+    --azure:       #3b82f6;
+    --azure-dim:   #1d4ed8;
+    --azure-glow:  rgba(59, 130, 246, 0.15);
+    --text:        #e2e2e8;
+    --text-muted:  #8888a0;
+    --text-dim:    #555568;
+    --white:       #ffffff;
+    --featured:    rgba(59, 130, 246, 0.08);
+    --radius:      10px;
+    --radius-sm:   6px;
+    --mono:        'JetBrains Mono', monospace;
+    --sans:        'Inter', sans-serif;
+    --max-w:       860px;
+    --section-gap: 48px;
+}
+
+
+/* ============================================================
+   BASE
+   ============================================================ */
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+main {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--section-gap);
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header {
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 48px 24px 32px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+/* Small monospace eyebrow label above the name */
+.eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--azure);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 12px;
+}
+
+/* Cert summary line — "DevOps Engineer · AZ-400 · AZ-204 · AZ-104" */
+.title-line {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+}
+
+.header-links {
+    display: flex;
+    gap: 12px;
+    padding-top: 4px;
+    flex-shrink: 0;
+}
+
+/* Square bordered icon button for LinkedIn and GitHub */
+.icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.icon-link:hover {
+    border-color: var(--azure);
+    background: var(--azure-glow);
+    transform: none;
+    box-shadow: none;
+}
+
+.header-icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    border-radius: 3px;
+}
+
+
+/* ============================================================
+   VISITOR COUNTER BAR
+   Sits below the header, separated by a top border.
+   Shows "LIVE VISITOR COUNT" label and the live number badge.
+   ============================================================ */
+.visitor-bar {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top: 1px solid var(--border);
+}
+
+/* "LIVE VISITOR COUNT" label
+   Color history:
+   - Original:    --text-dim (#555568)  — too dark, blended into background
+   - Attempt 2:   --text-muted (#8888a0) — better but still too subtle
+   - Final:       --azure (#3b82f6) — matches the number badge, pops on dark bg
+   Design preference: bright azure accent colors on dark background. */
+.visitor-label {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--azure);          /* Azure blue — matches number badge, stands out on dark bg */
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* The number badge — pill-shaped with azure glow background */
+.visitor-count {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--azure);
+    background: var(--azure-glow);
+    padding: 2px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+
+/* ============================================================
+   SECTION WRAPPER
+   ============================================================ */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Monospace uppercase azure section title with bottom border divider */
+.section-title {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    font-weight: 500;
+    color: var(--azure);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+
+/* ============================================================
+   SUMMARY
+   ============================================================ */
+.summary-text {
+    color: var(--text);
+    font-size: 0.97rem;
+    line-height: 1.8;
+    max-width: 720px;
+}
+
+
+/* ============================================================
+   EXPERIENCE — JOB CARDS
+   ============================================================ */
+.job {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.2s;
+}
+
+.job:hover {
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.job-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.3;
+}
+
+.job-company {
+    font-size: 0.88rem;
+    color: var(--azure);
+    margin-top: 2px;
+}
+
+.job-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.job-location {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+}
+
+.job-date {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+/* Bullet list — uses › character via CSS ::before instead of default bullets */
+.job-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 0;
+}
+
+.job-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.92rem;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+/* Azure › bullet marker injected via CSS — never touches the HTML */
+.job-list li::before {
+    content: "›";
+    color: var(--azure);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+    line-height: 1.5;
+}
+
+
+/* ============================================================
+   EDUCATION
+   ============================================================ */
+.edu-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.edu-degree {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+}
+
+.edu-school {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+/* Dashed underline for WGU link — less aggressive than solid */
+.edu-link {
+    color: var(--azure);
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(59, 130, 246, 0.4);
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.edu-link:hover {
+    color: var(--white);
+    border-color: var(--azure);
+    transform: none;
+    box-shadow: none;
+}
+
+.edu-date {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    padding-top: 4px;
+}
+
+
+/* ============================================================
+   CERTIFICATIONS
+   cert-grid: single-column flex list of cert rows
+   featured: blue tint for Azure certs (AZ-400, AZ-204, AZ-104)
+   no-link: suppresses hover on ITIL (no Credly URL)
+   cert-badge: "View" pill, hidden by default, fades in on hover
+   ============================================================ */
+.cert-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cert-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.2s, background 0.2s;
+}
+
+/* Azure cert rows get blue tint background and azure border */
+.cert-item.featured {
+    background: var(--featured);
+    border-color: rgba(59, 130, 246, 0.25);
+}
+
+.cert-item:hover {
+    border-color: var(--azure);
+    background: var(--azure-glow);
+}
+
+/* ITIL has no URL — disable hover so it doesn't look clickable */
+.cert-item.no-link {
+    cursor: default;
+}
+
+.cert-item.no-link:hover {
+    border-color: var(--border);
+    background: var(--surface);
+}
+
+/* Full-width anchor wrapper makes entire row clickable */
+.cert-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+.cert-link:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Cert logo — fixed 36x36, scales slightly on hover */
+.cert-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    flex-shrink: 0;
+    border-radius: 4px;
+    transition: transform 0.2s;
+}
+
+.cert-item:hover .cert-logo {
+    transform: scale(1.08);
+}
+
+/* Text block takes all remaining width between logo and badge */
+.cert-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.cert-name {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--white);
+}
+
+.cert-meta {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+/* "View" badge — hidden by default, fades in on hover */
+.cert-badge {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--azure);
+    background: var(--azure-glow);
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.cert-item:hover .cert-badge {
+    opacity: 1;
+}
+
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+}
+
+.footer-inner {
+    max-width: var(--max-w);
+    margin: 0 auto 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-contact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.footer-name {
+    font-weight: 600;
+    color: var(--white);
+    font-size: 0.95rem;
+}
+
+.footer-email {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--azure);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-email:hover {
+    color: var(--white);
+    transform: none;
+    box-shadow: none;
+}
+
+.footer-phone {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.footer-links {
+    display: flex;
+    gap: 10px;
+}
+
+.footer-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    border-radius: 3px;
+}
+
+/* Tech stack note — very dim, tertiary information */
+.footer-note {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    max-width: var(--max-w);
+    margin: 0 auto;
+}
+
+
+/* ============================================================
+   GLOBAL LINKS
+   ============================================================ */
+a {
+    color: var(--azure);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: var(--white);
+    transform: none;
+    box-shadow: none;
+}
+
+
+/* ============================================================
+   RESPONSIVE — MOBILE (max-width: 600px)
+   ============================================================ */
+@media (max-width: 600px) {
+    h1 { font-size: 2rem; }
+    .header-inner { flex-direction: column; align-items: flex-start; padding: 32px 20px 24px; }
+    .title-line { font-size: 0.7rem; }
+    .job-header { flex-direction: column; }
+    .job-meta { align-items: flex-start; }
+    .edu-row { flex-direction: column; }
+    .footer-inner { flex-direction: column; align-items: flex-start; }
+    .footer-contact { align-items: flex-start; }
+}
+
+
+/* ============================================================
+   ACCESSIBILITY — REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        transition: none !important;
+    }
+}
